@@ -82,6 +82,8 @@
 	"form_type_pool": "Piscina",
 	"form_type_other": "Altro",
 	"form_submit": "Iscriviti alla Lista d'Attesa",
+	"form_submitting": "Iscrizione in corso...",
+	"form_success": "Perfetto! Controlla la tua email per la conferma.",
 	"form_privacy": "Iscrivendoti, riceverai aggiornamenti sul nostro lancio. Rispettiamo la tua privacy e non ti invieremo spam.",
 	"benefits_title": "Cosa otterrai come membro early:",
 	"benefit_1": "<strong>Accesso anticipato</strong> alla piattaforma prima del lancio pubblico",

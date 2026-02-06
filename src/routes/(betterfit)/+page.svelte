@@ -9,6 +9,36 @@
 	import * as Select from "$lib/components/ui/select/index.js";
 
 	let selectedBusinessType = $state({ value: "", label: "Select your business type" });
+	
+	let isSubmitting = $state(false);
+	let formSuccess = $state(false);
+	let formData = $state({
+		email: '',
+		businessName: '',
+		businessType: ''
+	});
+
+	async function handleFormSubmit(e) {
+		e.preventDefault();
+		isSubmitting = true;
+		
+		try {
+			// Simulate API call - replace with real endpoint
+			await new Promise(resolve => setTimeout(resolve, 1500));
+			formSuccess = true;
+			formData = { email: '', businessName: '', businessType: '' };
+			selectedBusinessType = { value: "", label: "Select your business type" };
+			
+			// Hide success message after 5 seconds
+			setTimeout(() => {
+				formSuccess = false;
+			}, 5000);
+		} catch (error) {
+			console.error('Form submission error:', error);
+		} finally {
+			isSubmitting = false;
+		}
+	}
 </script>
 <div class="min-h-screen w-full">
 	<!-- Hero Section -->
@@ -119,8 +149,99 @@
 			</div>
 			
 			<!-- Full-width Dashboard Preview -->
-			<div class="rounded-2xl overflow-hidden shadow-2xl">
-				<enhanced:img src="$lib/assets/img/dashboard_main.png" alt="BetterFit Dashboard Preview" class="w-full h-full object-cover"/>
+			<div class="rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-muted to-muted/50">
+				<svg class="w-full h-full object-cover min-h-[400px]" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+					<defs>
+						<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+							<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" stroke-width="0.5"/>
+						</pattern>
+					</defs>
+					<rect width="1200" height="600" fill="url(#grid)" opacity="0.3"/>
+					<rect width="1200" height="600" fill="#f8fafc"/>
+					
+					<!-- Sidebar -->
+					<rect x="0" y="0" width="180" height="600" fill="#0f172a"/>
+					<circle cx="80" cy="40" r="15" fill="#22c55e"/>
+					<rect x="20" y="70" width="140" height="8" fill="#334155" rx="4"/>
+					<rect x="20" y="90" width="140" height="6" fill="#22c55e" rx="3" opacity="0.8"/>
+					<rect x="20" y="110" width="140" height="6" fill="#64748b" rx="3"/>
+					<rect x="20" y="130" width="140" height="6" fill="#64748b" rx="3"/>
+					<rect x="20" y="150" width="140" height="6" fill="#64748b" rx="3"/>
+					
+					<!-- Main content area -->
+					<rect x="180" y="0" width="1020" height="600" fill="#f8fafc"/>
+					
+					<!-- Header -->
+					<rect x="180" y="0" width="1020" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+					<rect x="200" y="20" width="150" height="20" fill="#e2e8f0" rx="4"/>
+					<circle cx="1120" cy="30" r="12" fill="#cbd5e1"/>
+					
+					<!-- Stats Cards -->
+					<g>
+						<rect x="200" y="90" width="220" height="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+						<rect x="220" y="110" width="40" height="40" fill="#dbeafe" rx="6"/>
+						<text x="270" y="125" font-family="system-ui" font-size="12" fill="#64748b">Total Members</text>
+						<text x="270" y="145" font-family="system-ui" font-size="24" font-weight="bold" fill="#1e293b">2,847</text>
+					</g>
+					
+					<g>
+						<rect x="440" y="90" width="220" height="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+						<rect x="460" y="110" width="40" height="40" fill="#dcfce7" rx="6"/>
+						<text x="510" y="125" font-family="system-ui" font-size="12" fill="#64748b">Revenue</text>
+						<text x="510" y="145" font-family="system-ui" font-size="24" font-weight="bold" fill="#1e293b">$84.2K</text>
+					</g>
+					
+					<g>
+						<rect x="680" y="90" width="220" height="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+						<rect x="700" y="110" width="40" height="40" fill="#fef3c7" rx="6"/>
+						<text x="750" y="125" font-family="system-ui" font-size="12" fill="#64748b">Active Classes</text>
+						<text x="750" y="145" font-family="system-ui" font-size="24" font-weight="bold" fill="#1e293b">24</text>
+					</g>
+					
+					<!-- Chart Area -->
+					<g>
+						<rect x="200" y="210" width="700" height="330" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+						<text x="220" y="235" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">Member Growth</text>
+						
+						<!-- Simple bar chart -->
+						<rect x="220" y="300" width="30" height="100" fill="#22c55e" opacity="0.8"/>
+						<rect x="260" y="280" width="30" height="120" fill="#22c55e" opacity="0.8"/>
+						<rect x="300" y="260" width="30" height="140" fill="#22c55e" opacity="0.8"/>
+						<rect x="340" y="240" width="30" height="160" fill="#22c55e" opacity="0.8"/>
+						<rect x="380" y="220" width="30" height="180" fill="#22c55e" opacity="0.8"/>
+						<rect x="420" y="200" width="30" height="200" fill="#22c55e" opacity="0.8"/>
+						<rect x="460" y="190" width="30" height="210" fill="#22c55e" opacity="0.8"/>
+						<rect x="500" y="170" width="30" height="230" fill="#22c55e" opacity="0.8"/>
+						<rect x="540" y="150" width="30" height="250" fill="#22c55e" opacity="0.8"/>
+						<rect x="580" y="140" width="30" height="260" fill="#22c55e" opacity="0.8"/>
+						
+						<!-- Grid lines -->
+						<line x1="200" y1="400" x2="700" y2="400" stroke="#e2e8f0" stroke-width="1"/>
+						<line x1="200" y1="450" x2="700" y2="450" stroke="#e2e8f0" stroke-width="1"/>
+						<line x1="200" y1="500" x2="700" y2="500" stroke="#e2e8f0" stroke-width="1"/>
+					</g>
+					
+					<!-- Right sidebar info -->
+					<g>
+						<rect x="920" y="90" width="260" height="450" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+						<text x="940" y="120" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">Upcoming Classes</text>
+						
+						<rect x="940" y="140" width="220" height="50" fill="#f8fafc" rx="6"/>
+						<circle cx="958" cy="160" r="8" fill="#22c55e"/>
+						<text x="975" y="155" font-family="system-ui" font-size="12" font-weight="bold" fill="#1e293b">Morning Yoga</text>
+						<text x="975" y="168" font-family="system-ui" font-size="11" fill="#64748b">07:00 AM • 12/20 Members</text>
+						
+						<rect x="940" y="200" width="220" height="50" fill="#f8fafc" rx="6"/>
+						<circle cx="958" cy="220" r="8" fill="#22c55e"/>
+						<text x="975" y="215" font-family="system-ui" font-size="12" font-weight="bold" fill="#1e293b">CrossFit WOD</text>
+						<text x="975" y="228" font-family="system-ui" font-size="11" fill="#64748b">06:00 PM • 18/20 Members</text>
+						
+						<rect x="940" y="260" width="220" height="50" fill="#f8fafc" rx="6"/>
+						<circle cx="958" cy="280" r="8" fill="#22c55e"/>
+						<text x="975" y="275" font-family="system-ui" font-size="12" font-weight="bold" fill="#1e293b">Pilates Class</text>
+						<text x="975" y="288" font-family="system-ui" font-size="11" fill="#64748b">10:00 AM • 14/10 Members</text>
+					</g>
+				</svg>
             </div>
 		</div>
 	</section>
@@ -181,9 +302,66 @@
 						</ul>
 					</div>
 					<div class="flex-1">
-						<div class="rounded-2xl overflow-hidden shadow-2xl">
-																<enhanced:img src="$lib/assets/img/dashboard_members.png" alt="Member Management Screenshot" class="w-full h-full object-cover"/>
-
+						<div class="rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-muted to-muted/50">
+							<svg class="w-full h-full object-cover min-h-[400px]" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+								<rect width="600" height="500" fill="#f8fafc"/>
+								
+								<!-- Header -->
+								<rect width="600" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+								<circle cx="30" cy="30" r="12" fill="#3b82f6"/>
+								<text x="50" y="35" font-family="system-ui" font-size="16" font-weight="bold" fill="#1e293b">Members</text>
+								
+								<!-- Tabs -->
+								<text x="200" y="45" font-family="system-ui" font-size="12" fill="#3b82f6" font-weight="bold">All Members</text>
+								<line x1="200" y1="50" x2="280" y2="50" stroke="#3b82f6" stroke-width="2"/>
+								<text x="300" y="45" font-family="system-ui" font-size="12" fill="#64748b">Active</text>
+								<text x="360" y="45" font-family="system-ui" font-size="12" fill="#64748b">Inactive</text>
+								
+								<!-- Member List -->
+								<g>
+									<rect x="20" y="85" width="560" height="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="6"/>
+									<circle cx="50" cy="110" r="12" fill="#dbeafe"/>
+									<text x="75" y="105" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Sarah Johnson</text>
+									<text x="75" y="120" font-family="system-ui" font-size="11" fill="#64748b">Premium • Since Jan 2024</text>
+									<rect x="520" y="92" width="40" height="36" fill="#dcfce7" rx="4"/>
+									<text x="525" y="115" font-family="system-ui" font-size="11" font-weight="bold" fill="#22c55e">Active</text>
+								</g>
+								
+								<g>
+									<rect x="20" y="155" width="560" height="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="6"/>
+									<circle cx="50" cy="180" r="12" fill="#fed7aa"/>
+									<text x="75" y="175" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Mike Chen</text>
+									<text x="75" y="190" font-family="system-ui" font-size="11" fill="#64748b">Standard • Since Mar 2024</text>
+									<rect x="520" y="162" width="40" height="36" fill="#dcfce7" rx="4"/>
+									<text x="525" y="185" font-family="system-ui" font-size="11" font-weight="bold" fill="#22c55e">Active</text>
+								</g>
+								
+								<g>
+									<rect x="20" y="225" width="560" height="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="6"/>
+									<circle cx="50" cy="250" r="12" fill="#f0abfc"/>
+									<text x="75" y="245" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Emma Davis</text>
+									<text x="75" y="260" font-family="system-ui" font-size="11" fill="#64748b">Premium • Since Dec 2023</text>
+									<rect x="520" y="232" width="40" height="36" fill="#dcfce7" rx="4"/>
+									<text x="525" y="255" font-family="system-ui" font-size="11" font-weight="bold" fill="#22c55e">Active</text>
+								</g>
+								
+								<g>
+									<rect x="20" y="295" width="560" height="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="6"/>
+									<circle cx="50" cy="320" r="12" fill="#bfdbfe"/>
+									<text x="75" y="315" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Alex Rodriguez</text>
+									<text x="75" y="330" font-family="system-ui" font-size="11" fill="#64748b">Standard • Since Feb 2024</text>
+									<rect x="520" y="302" width="40" height="36" fill="#fecaca" rx="4"/>
+									<text x="525" y="325" font-family="system-ui" font-size="11" font-weight="bold" fill="#dc2626">Inactive</text>
+								</g>
+								
+								<!-- Pagination -->
+								<text x="250" y="380" font-family="system-ui" font-size="12" fill="#64748b">Page 1 of 45 • Showing 4 of 1,847 members</text>
+								
+								<!-- Bottom action bar -->
+								<rect x="20" y="410" width="560" height="40" fill="#dbeafe" opacity="0.3" rx="6"/>
+								<text x="40" y="435" font-family="system-ui" font-size="12" fill="#3b82f6" font-weight="bold">+ Add New Member</text>
+								<text x="480" y="435" font-family="system-ui" font-size="12" fill="#3b82f6">Export to CSV</text>
+							</svg>
                         </div>
 					</div>
 				</div>
@@ -234,8 +412,79 @@
 						</ul>
 					</div>
 					<div class="flex-1">
-						<div class="rounded-2xl overflow-hidden shadow-2xl">
-							<enhanced:img src="$lib/assets/img/dashboard_scheduling.png" alt="Class Scheduling Screenshot" class="w-full h-full object-cover"/>
+						<div class="rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-muted to-muted/50">
+							<svg class="w-full h-full object-cover min-h-[400px]" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+								<rect width="600" height="500" fill="#f8fafc"/>
+								
+								<!-- Header -->
+								<rect width="600" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+								<circle cx="30" cy="30" r="12" fill="#06b6d4"/>
+								<text x="50" y="35" font-family="system-ui" font-size="16" font-weight="bold" fill="#1e293b">Schedule</text>
+								<text x="500" y="35" font-family="system-ui" font-size="13" fill="#64748b">March 2024</text>
+								
+								<!-- Calendar grid -->
+								<g id="calendar">
+									<!-- Days of week header -->
+									<text x="30" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">MON</text>
+									<text x="95" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">TUE</text>
+									<text x="160" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">WED</text>
+									<text x="225" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">THU</text>
+									<text x="290" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">FRI</text>
+									<text x="355" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">SAT</text>
+									<text x="420" y="90" font-family="system-ui" font-size="11" font-weight="bold" fill="#64748b">SUN</text>
+									
+									<!-- Calendar cells with classes -->
+									<g>
+										<!-- Week 1 -->
+										<rect x="20" y="110" width="60" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+										<text x="35" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">4</text>
+										<circle cx="55" cy="155" r="3" fill="#06b6d4"/>
+										
+										<rect x="85" y="110" width="60" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+										<text x="100" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">5</text>
+										
+										<rect x="150" y="110" width="60" height="60" fill="#dbeafe" stroke="#06b6d4" stroke-width="2" rx="4"/>
+										<text x="165" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#0369a1">6</text>
+										<text x="160" y="150" font-family="system-ui" font-size="8" fill="#0369a1" font-weight="bold">Yoga</text>
+										<text x="157" y="165" font-family="system-ui" font-size="8" fill="#0369a1">7:00 AM</text>
+										
+										<rect x="215" y="110" width="60" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+										<text x="230" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">7</text>
+										<circle cx="255" cy="155" r="3" fill="#06b6d4"/>
+										<circle cx="245" cy="155" r="3" fill="#06b6d4"/>
+										
+										<rect x="280" y="110" width="60" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+										<text x="295" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">8</text>
+										<circle cx="320" cy="155" r="3" fill="#06b6d4"/>
+										
+										<rect x="345" y="110" width="60" height="60" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="4"/>
+										<text x="360" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#16a34a">9</text>
+										<text x="350" y="150" font-family="system-ui" font-size="8" fill="#16a34a" font-weight="bold">CrossFit</text>
+										<text x="353" y="165" font-family="system-ui" font-size="8" fill="#16a34a">6:00 PM</text>
+										
+										<rect x="410" y="110" width="60" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+										<text x="425" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">10</text>
+									</g>
+									
+									<!-- Week 2 -->
+									<g transform="translate(0, 80)">
+										<rect x="20" y="110" width="60" height="60" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
+										<text x="35" y="130" font-family="system-ui" font-size="14" font-weight="bold" fill="#92400e">11</text>
+										<text x="25" y="150" font-family="system-ui" font-size="8" fill="#92400e" font-weight="bold">Pilates</text>
+										<text x="29" y="165" font-family="system-ui" font-size="8" fill="#92400e">10:00 AM</text>
+									</g>
+								</g>
+								
+								<!-- Legend -->
+								<g>
+									<circle cx="30" cy="450" r="3" fill="#06b6d4"/>
+									<text x="40" y="455" font-family="system-ui" font-size="11" fill="#64748b">1 class</text>
+									
+									<circle cx="30" cy="475" r="3" fill="#06b6d4"/>
+									<circle cx="38" cy="475" r="3" fill="#06b6d4"/>
+									<text x="50" y="480" font-family="system-ui" font-size="11" fill="#64748b">Multiple classes</text>
+								</g>
+							</svg>
                         </div>
 					</div>
 				</div>
@@ -286,8 +535,88 @@
 						</ul>
 					</div>
 					<div class="flex-1">
-						<div class="rounded-2xl overflow-hidden shadow-2xl">
-							<enhanced:img src="$lib/assets/img/dashboard_stats.png" alt="Analytics Screenshot" class="w-full h-full object-cover"/>
+						<div class="rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-muted to-muted/50">
+							<svg class="w-full h-full object-cover min-h-[400px]" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+								<rect width="600" height="500" fill="#f8fafc"/>
+								
+								<!-- Header -->
+								<rect width="600" height="60" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+								<circle cx="30" cy="30" r="12" fill="#22c55e"/>
+								<text x="50" y="35" font-family="system-ui" font-size="16" font-weight="bold" fill="#1e293b">Analytics</text>
+								<text x="480" y="35" font-family="system-ui" font-size="12" fill="#64748b">Last 30 days</text>
+								
+								<!-- KPI Cards -->
+								<g>
+									<rect x="20" y="80" width="140" height="80" fill="#dcfce7" rx="8"/>
+									<text x="35" y="105" font-family="system-ui" font-size="11" fill="#16a34a">Revenue</text>
+									<text x="35" y="130" font-family="system-ui" font-size="22" font-weight="bold" fill="#15803d">$24.8K</text>
+									<text x="35" y="150" font-family="system-ui" font-size="10" fill="#16a34a">+12% vs last period</text>
+								</g>
+								
+								<g>
+									<rect x="170" y="80" width="140" height="80" fill="#dbeafe" rx="8"/>
+									<text x="185" y="105" font-family="system-ui" font-size="11" fill="#0369a1">Members</text>
+									<text x="185" y="130" font-family="system-ui" font-size="22" font-weight="bold" fill="#0c4a6e">+247</text>
+									<text x="185" y="150" font-family="system-ui" font-size="10" fill="#0369a1">+8% month-over-month</text>
+								</g>
+								
+								<g>
+									<rect x="320" y="80" width="140" height="80" fill="#fef3c7" rx="8"/>
+									<text x="335" y="105" font-family="system-ui" font-size="11" fill="#92400e">Attendance</text>
+									<text x="335" y="130" font-family="system-ui" font-size="22" font-weight="bold" fill="#78350f">85.2%</text>
+									<text x="335" y="150" font-family="system-ui" font-size="10" fill="#92400e">Average rate</text>
+								</g>
+								
+								<g>
+									<rect x="470" y="80" width="110" height="80" fill="#f0abfc" rx="8"/>
+									<text x="485" y="105" font-family="system-ui" font-size="11" fill="#7c2d91">Churn</text>
+									<text x="485" y="130" font-family="system-ui" font-size="22" font-weight="bold" fill="#6b21a8">2.1%</text>
+									<text x="485" y="150" font-family="system-ui" font-size="10" fill="#7c2d91">-0.5% improvement</text>
+								</g>
+								
+								<!-- Chart -->
+								<text x="30" y="190" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Revenue Trend</text>
+								
+								<g>
+									<!-- Y-axis labels -->
+									<text x="10" y="245" font-family="system-ui" font-size="9" fill="#94a3b8">500K</text>
+									<text x="18" y="310" font-family="system-ui" font-size="9" fill="#94a3b8">250K</text>
+									<text x="28" y="375" font-family="system-ui" font-size="9" fill="#94a3b8">0</text>
+									
+									<!-- Grid lines -->
+									<line x1="45" y1="250" x2="560" y2="250" stroke="#e2e8f0" stroke-width="1"/>
+									<line x1="45" y1="310" x2="560" y2="310" stroke="#e2e8f0" stroke-width="1"/>
+									<line x1="45" y1="370" x2="560" y2="370" stroke="#e2e8f0" stroke-width="1"/>
+									
+									<!-- Line chart -->
+									<polyline points="60,300 120,270 180,260 240,280 300,240 360,220 420,200 480,190 540,160" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+									
+									<!-- Area under line -->
+									<polygon points="60,300 120,270 180,260 240,280 300,240 360,220 420,200 480,190 540,160 540,370 60,370" fill="#22c55e" opacity="0.1"/>
+									
+									<!-- Data points -->
+									<circle cx="60" cy="300" r="4" fill="#22c55e"/>
+									<circle cx="120" cy="270" r="4" fill="#22c55e"/>
+									<circle cx="180" cy="260" r="4" fill="#22c55e"/>
+									<circle cx="240" cy="280" r="4" fill="#22c55e"/>
+									<circle cx="300" cy="240" r="4" fill="#22c55e"/>
+									<circle cx="360" cy="220" r="4" fill="#22c55e"/>
+									<circle cx="420" cy="200" r="4" fill="#22c55e"/>
+									<circle cx="480" cy="190" r="4" fill="#22c55e"/>
+									<circle cx="540" cy="160" r="4" fill="#22c55e"/>
+									
+									<!-- X-axis -->
+									<line x1="45" y1="370" x2="560" y2="370" stroke="#1e293b" stroke-width="1"/>
+									
+									<!-- X-axis labels -->
+									<text x="50" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">1 Mar</text>
+									<text x="150" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">7 Mar</text>
+									<text x="250" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">14 Mar</text>
+									<text x="350" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">21 Mar</text>
+									<text x="450" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">28 Mar</text>
+									<text x="540" y="395" font-family="system-ui" font-size="9" fill="#94a3b8" text-anchor="middle">31 Mar</text>
+								</g>
+							</svg>
                         </div>
 					</div>
 				</div>
@@ -339,8 +668,87 @@
 					</div>
 					<div class="flex-1">
 						<div class="max-w-[300px] mx-auto">
-							<div class="rounded-3xl overflow-hidden shadow-2xl">
-								<enhanced:img src="$lib/assets/img/mobile_client.png" alt="Mobile App Screenshot" class="w-full h-full object-cover"/>
+							<div class="rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-muted to-muted/50 border-8 border-slate-900">
+								<svg class="w-full h-full object-cover" viewBox="0 0 280 560" xmlns="http://www.w3.org/2000/svg">
+									<!-- Phone screen background -->
+									<rect width="280" height="560" fill="#f8fafc"/>
+									
+									<!-- Status bar -->
+									<rect width="280" height="30" fill="#1e293b"/>
+									<text x="14" y="22" font-family="system-ui" font-size="11" fill="#ffffff" font-weight="bold">9:41</text>
+									<g transform="translate(255, 15)">
+										<path d="M 0 0 L 3 -3 L 3 3 Z" fill="#ffffff" opacity="0.8"/>
+										<rect x="0" y="0" width="8" height="5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.8"/>
+										<rect x="0" y="6" width="8" height="3" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.8"/>
+									</g>
+									
+									<!-- Header/Navigation -->
+									<rect y="30" width="280" height="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+									<circle cx="20" cy="55" r="10" fill="#e2e8f0"/>
+									<text x="40" y="60" font-family="system-ui" font-size="14" font-weight="bold" fill="#1e293b">BetterFit</text>
+									
+									<!-- Home Tab -->
+									<rect y="80" width="280" height="40" fill="#dcfce7"/>
+									<circle cx="140" cy="100" r="12" fill="#22c55e"/>
+									<text x="120" y="128" font-family="system-ui" font-size="11" text-anchor="middle" fill="#1e293b">Home</text>
+									
+									<!-- Classes Section -->
+									<text x="15" y="160" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">Upcoming Classes</text>
+									
+									<!-- Class Card 1 -->
+									<g>
+										<rect x="10" y="175" width="260" height="70" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+										<rect x="15" y="180" width="50" height="50" fill="#dbeafe" rx="6"/>
+										<text x="25" y="205" font-family="system-ui" font-size="10" font-weight="bold" fill="#0369a1" text-anchor="middle">Yoga</text>
+										<text x="72" y="195" font-family="system-ui" font-size="12" font-weight="bold" fill="#1e293b">Morning Yoga</text>
+										<text x="72" y="210" font-family="system-ui" font-size="10" fill="#64748b">Today • 7:00 AM</text>
+										<text x="240" y="210" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="end">12/20</text>
+										<rect x="230" y="217" width="35" height="20" fill="#22c55e" rx="4"/>
+										<text x="247" y="228" font-family="system-ui" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">Book</text>
+									</g>
+									
+									<!-- Class Card 2 -->
+									<g>
+										<rect x="10" y="260" width="260" height="70" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+										<rect x="15" y="265" width="50" height="50" fill="#fed7aa" rx="6"/>
+										<text x="25" y="290" font-family="system-ui" font-size="10" font-weight="bold" fill="#92400e" text-anchor="middle">XFIT</text>
+										<text x="72" y="280" font-family="system-ui" font-size="12" font-weight="bold" fill="#1e293b">CrossFit WOD</text>
+										<text x="72" y="295" font-family="system-ui" font-size="10" fill="#64748b">Tomorrow • 6:00 PM</text>
+										<text x="240" y="295" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="end">Waitlist</text>
+										<rect x="225" y="302" width="45" height="20" fill="#f59e0b" rx="4"/>
+										<text x="247" y="313" font-family="system-ui" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">Join Wait</text>
+									</g>
+									
+									<!-- My Progress -->
+									<text x="15" y="360" font-family="system-ui" font-size="13" font-weight="bold" fill="#1e293b">My Progress</text>
+									<g>
+										<rect x="10" y="370" width="260" height="70" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="8"/>
+										<text x="20" y="390" font-family="system-ui" font-size="11" font-weight="bold" fill="#1e293b">Classes Attended</text>
+										<text x="20" y="405" font-family="system-ui" font-size="18" font-weight="bold" fill="#22c55e">24</text>
+										<text x="20" y="420" font-family="system-ui" font-size="9" fill="#64748b">+2 this week</text>
+										
+										<text x="150" y="390" font-family="system-ui" font-size="11" font-weight="bold" fill="#1e293b">Streak</text>
+										<text x="150" y="405" font-family="system-ui" font-size="18" font-weight="bold" fill="#3b82f6">12 days</text>
+										<text x="150" y="420" font-family="system-ui" font-size="9" fill="#64748b">Keep it up!</text>
+									</g>
+									
+									<!-- Bottom tabs -->
+									<g>
+										<rect y="450" width="280" height="110" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+										
+										<!-- Tab icons -->
+										<g text-anchor="middle">
+											<circle cx="70" cy="495" r="8" fill="#22c55e" opacity="0.8"/>
+											<text x="70" y="530" font-family="system-ui" font-size="10" fill="#22c55e" font-weight="bold">Home</text>
+											
+											<rect x="125" y="488" width="10" height="12" fill="#64748b" opacity="0.5"/>
+											<text x="140" y="530" font-family="system-ui" font-size="10" fill="#64748b">Classes</text>
+											
+											<circle cx="210" cy="495" r="5" fill="#64748b" opacity="0.5"/>
+											<text x="210" y="530" font-family="system-ui" font-size="10" fill="#64748b">Profile</text>
+										</g>
+									</g>
+								</svg>
                             </div>
 						</div>
 					</div>
@@ -409,7 +817,13 @@
 			<div class="max-w-2xl mx-auto">
 				<Card.Root class="border-2 border-primary/20 shadow-xl">
 					<Card.Content class="p-8 md:p-12">
-						<form class="space-y-6">
+						{#if formSuccess}
+							<div class="mb-6 p-4 bg-green-100 dark:bg-green-950 border border-green-300 dark:border-green-800 rounded-lg">
+								<p class="text-green-800 dark:text-green-200 font-medium">✓ {m.form_success()}</p>
+							</div>
+						{/if}
+						
+						<form onsubmit={handleFormSubmit} class="space-y-6">
 							<div class="space-y-4">
 								<div class="space-y-2">
 									<Label for="email">{m.form_email_label()}</Label>
@@ -417,8 +831,10 @@
 										type="email"
 										id="email"
 										placeholder={m.form_email_placeholder()}
+										bind:value={formData.email}
 										class="h-12"
 										required
+										disabled={isSubmitting}
 									/>
 								</div>
 								<div class="space-y-2">
@@ -427,13 +843,15 @@
 										type="text"
 										id="business"
 										placeholder={m.form_business_placeholder()}
+										bind:value={formData.businessName}
 										class="h-12"
+										disabled={isSubmitting}
 									/>
 								</div>
 								<div class="space-y-2">
 									<Label for="type">{m.form_type_label()}</Label>
 									<Select.Root bind:selected={selectedBusinessType}>
-										<Select.Trigger class="h-12 w-full">
+										<Select.Trigger class="h-12 w-full" disabled={isSubmitting}>
 											<span data-slot="select-value">{selectedBusinessType?.label || m.form_type_placeholder()}</span>
 										</Select.Trigger>
 										<Select.Content>
@@ -455,11 +873,20 @@
 								type="submit"
 								size="lg"
 								class="w-full h-14 text-lg shadow-xl"
+								disabled={isSubmitting}
 							>
-								{m.form_submit()}
-								<svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-								</svg>
+								{#if isSubmitting}
+									<span class="relative flex h-3 w-3 mr-2">
+										<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+										<span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+									</span>
+									{m.form_submitting()}
+								{:else}
+									{m.form_submit()}
+									<svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+									</svg>
+								{/if}
 							</Button>
 							
 							<p class="text-xs text-center text-muted-foreground">

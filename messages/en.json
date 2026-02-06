@@ -82,6 +82,8 @@
 	"form_type_pool": "Swimming Pool",
 	"form_type_other": "Other",
 	"form_submit": "Join the Waitlist",
+	"form_submitting": "Joining...",
+	"form_success": "Success! Check your email for confirmation.",
 	"form_privacy": "By joining, you'll receive updates about our launch. We respect your privacy and won't spam you.",
 	"benefits_title": "What you'll get as an early member:",
 	"benefit_1": "<strong>Early access</strong> to the platform before public launch",

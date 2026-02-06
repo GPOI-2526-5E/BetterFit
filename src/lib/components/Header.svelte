@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
 	import * as m from '$lib/paraglide/messages.js';
@@ -6,10 +7,42 @@
 	let { currentPath = $bindable('/') } = $props();
 
 	let mobileMenuOpen = $state(false);
+	let theme = $state<'light' | 'dark'>('light');
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
 	}
+
+	function applyTheme(nextTheme: 'light' | 'dark') {
+		theme = nextTheme;
+		if (typeof document !== 'undefined') {
+			document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+		}
+		try {
+			localStorage.setItem('theme', nextTheme);
+		} catch {
+			// Ignore storage errors (private mode, blocked storage, etc.)
+		}
+	}
+
+	function toggleTheme() {
+		applyTheme(theme === 'dark' ? 'light' : 'dark');
+	}
+
+	onMount(() => {
+		let initialTheme: 'light' | 'dark' = 'light';
+		try {
+			const savedTheme = localStorage.getItem('theme');
+			if (savedTheme === 'light' || savedTheme === 'dark') {
+				initialTheme = savedTheme;
+			} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				initialTheme = 'dark';
+			}
+		} catch {
+			// Ignore storage errors
+		}
+		applyTheme(initialTheme);
+	});
 
 	const navItems = [
 		{ id: 'features', label: 'Features', href: '#features' },
@@ -60,7 +93,49 @@
 
 		<div class="hidden md:flex items-center gap-3">
 			<LanguageSwitcher />
-            		<!-- Desktop CTA Buttons 
+			<Button
+				variant="ghost"
+				size="sm"
+				onclick={toggleTheme}
+				aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+			>
+				{#if theme === 'dark'}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="w-4 h-4"
+					>
+						<circle cx="12" cy="12" r="4" />
+						<path d="M12 2v2" />
+						<path d="M12 20v2" />
+						<path d="M4.93 4.93l1.41 1.41" />
+						<path d="M17.66 17.66l1.41 1.41" />
+						<path d="M2 12h2" />
+						<path d="M20 12h2" />
+						<path d="M6.34 17.66l-1.41 1.41" />
+						<path d="M19.07 4.93l-1.41 1.41" />
+					</svg>
+				{:else}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="w-4 h-4"
+					>
+						<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+					</svg>
+				{/if}
+			</Button>
+	            		<!-- Desktop CTA Buttons 
 
 			<Button variant="ghost" size="sm">
 				Sign In
@@ -126,8 +201,51 @@
 					</a>
 				{/each}
 				<div class="pt-3 space-y-2 border-t border-border/40">
-					<div class="px-3 pb-2">
+					<div class="px-3 pb-2 flex items-center justify-between">
 						<LanguageSwitcher />
+						<button
+							onclick={toggleTheme}
+							class="flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground transition-colors"
+							aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+						>
+							{#if theme === 'dark'}
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="w-4 h-4"
+								>
+									<circle cx="12" cy="12" r="4" />
+									<path d="M12 2v2" />
+									<path d="M12 20v2" />
+									<path d="M4.93 4.93l1.41 1.41" />
+									<path d="M17.66 17.66l1.41 1.41" />
+									<path d="M2 12h2" />
+									<path d="M20 12h2" />
+									<path d="M6.34 17.66l-1.41 1.41" />
+									<path d="M19.07 4.93l-1.41 1.41" />
+								</svg>
+								<span>Light</span>
+							{:else}
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="w-4 h-4"
+								>
+									<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+								</svg>
+								<span>Dark</span>
+							{/if}
+						</button>
 					</div>
                     <!--
 					<Button variant="ghost" size="sm" class="w-full justify-start">
