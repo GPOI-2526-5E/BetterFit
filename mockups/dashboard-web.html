@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gymbro - Mockup Dashboard Web</title>
+  <style>
+    :root {
+      --bg-a: #f8fafc;
+      --bg-b: #eef6ff;
+      --panel: #ffffff;
+      --ink: #102035;
+      --muted: #5a6b82;
+      --primary: #0f8b8d;
+      --primary-soft: #e5f6f4;
+      --accent: #ff6b35;
+      --accent-soft: #ffe9e0;
+      --danger: #d7263d;
+      --ok: #1ea672;
+      --shadow: 0 14px 40px rgba(18, 37, 60, 0.12);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 95% -10%, #dff7ef 0%, transparent 60%),
+        radial-gradient(800px 500px at -10% 10%, #ffeede 0%, transparent 60%),
+        linear-gradient(140deg, var(--bg-a), var(--bg-b));
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      padding: 18px;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #07192f 0%, #112945 100%);
+      color: #eaf3ff;
+      border-radius: var(--radius-lg);
+      padding: 20px 14px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: rise 420ms ease-out;
+    }
+
+    .brand {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.3px;
+    }
+
+    .brand small {
+      color: #9bb4d2;
+      font-size: 0.76rem;
+    }
+
+    .menu-group {
+      margin-top: 4px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .menu-item {
+      padding: 11px 12px;
+      border-radius: 12px;
+      color: #cee1f8;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: 160ms ease;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: linear-gradient(90deg, rgba(15, 139, 141, 0.5), rgba(15, 139, 141, 0.15));
+      color: #fff;
+      transform: translateX(2px);
+    }
+
+    .menu-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: rise 500ms ease-out;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search input {
+      width: 100%;
+      border: 1px solid #d8e4f3;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn.accent {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      animation: rise 620ms ease-out;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.2px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .kpi {
+      border-radius: 14px;
+      padding: 12px;
+      background: linear-gradient(180deg, #fff, #f7fbff);
+      border: 1px solid #e6eef8;
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 6px;
+    }
+
+    .kpi .value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .kpi.critical { background: var(--accent-soft); border-color: #ffd4c4; }
+    .kpi.good { background: var(--primary-soft); border-color: #cce9e6; }
+
+    .queue {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .queue th,
+    .queue td {
+      text-align: left;
+      padding: 9px 8px;
+      border-bottom: 1px solid #edf2f8;
+      vertical-align: top;
+    }
+
+    .queue th {
+      font-size: 0.76rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tag.warn { background: #fff4d8; color: #8b6500; }
+    .tag.err { background: #ffe2e6; color: #9b1c2e; }
+    .tag.ok { background: #dbf7eb; color: #066b44; }
+
+    .member-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #11355b, #0f8b8d);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .member-meta strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .member-meta small {
+      color: var(--muted);
+      font-size: 0.79rem;
+    }
+
+    .quick {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border: 1px solid #d9e5f4;
+      border-radius: 999px;
+      background: #fff;
+      font-size: 0.8rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 8px;
+    }
+
+    .event {
+      padding: 10px;
+      border-radius: 12px;
+      background: #f9fbff;
+      border: 1px solid #e9f1fb;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+
+    .event time {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .alert-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .alert {
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 0.82rem;
+      border: 1px solid;
+      display: grid;
+      gap: 4px;
+    }
+
+    .alert.warn { background: #fff9e8; border-color: #ffe3a6; }
+    .alert.err { background: #ffedf0; border-color: #ffc0c9; }
+    .alert.ok { background: #eafaf2; border-color: #b9efd5; }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .device {
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid #e8edf5;
+      background: #fbfcff;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(30, 166, 114, 0.2);
+    }
+
+    .dot.off {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(215, 38, 61, 0.2);
+    }
+
+    .legend {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1180px) {
+      .app { grid-template-columns: 90px 1fr; }
+      .brand h1, .brand small, .menu-item span:last-child { display: none; }
+      .menu-item { justify-content: center; }
+      .content { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 820px) {
+      .app { grid-template-columns: 1fr; padding: 10px; }
+      .sidebar { order: 2; }
+      .workspace { order: 1; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .top-actions { width: 100%; }
+      .btn { flex: 1; }
+      .device-grid { grid-template-columns: 1fr; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>GYMBRO OPS</h1>
+        <small>Dashboard staff multi-club</small>
+      </div>
+
+      <nav class="menu-group">
+        <a class="menu-item active" href="#"><span>Home</span><span class="menu-badge">4</span></a>
+        <a class="menu-item" href="#"><span>Utenti</span><span></span></a>
+        <a class="menu-item" href="#"><span>Accessi</span><span class="menu-badge">Live</span></a>
+        <a class="menu-item" href="#"><span>Vendite</span><span></span></a>
+        <a class="menu-item" href="#"><span>Training</span><span></span></a>
+        <a class="menu-item" href="#"><span>CRM</span><span></span></a>
+        <a class="menu-item" href="#"><span>Report</span><span></span></a>
+        <a class="menu-item" href="#"><span>Dispositivi</span><span class="menu-badge">IoT</span></a>
+        <a class="menu-item" href="#"><span>Impostazioni</span><span></span></a>
+      </nav>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="search">
+          <strong>Filiale Caserta Centro</strong>
+          <input type="search" placeholder="Ricerca globale: utente, ricevuta, corso, dispositivo..." />
+        </div>
+        <div class="top-actions">
+          <button class="btn accent">Sblocca tornello</button>
+          <button class="btn primary">Nuova vendita</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Panoramica Operativa Oggi</h2>
+              <small>aggiornata 30 sec fa</small>
+            </div>
+            <div class="kpi-grid">
+              <article class="kpi good">
+                <div class="label">Accessi registrati</div>
+                <div class="value">428</div>
+              </article>
+              <article class="kpi">
+                <div class="label">Prenotazioni prossime 2h</div>
+                <div class="value">36</div>
+              </article>
+              <article class="kpi critical">
+                <div class="label">Certificati in scadenza</div>
+                <div class="value">19</div>
+              </article>
+              <article class="kpi">
+                <div class="label">Incasso giornaliero</div>
+                <div class="value">€ 4.920</div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Coda Operativa Prioritaria</h2>
+              <small>ordinata per rischio operativo</small>
+            </div>
+            <table class="queue">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Utente</th>
+                  <th>Scadenza</th>
+                  <th>Stato</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Rinnovo abbonamento trimestrale</td>
+                  <td>Antonio Petricciuoli</td>
+                  <td>Oggi 19:00</td>
+                  <td><span class="tag warn">Da contattare</span></td>
+                </tr>
+                <tr>
+                  <td>Documento medico mancante</td>
+                  <td>Giulia Ferraro</td>
+                  <td>Domani</td>
+                  <td><span class="tag err">Blocco imminente</span></td>
+                </tr>
+                <tr>
+                  <td>Pagamento RID fallito</td>
+                  <td>Mario Rossi</td>
+                  <td>+48h</td>
+                  <td><span class="tag err">Intervento richiesto</span></td>
+                </tr>
+                <tr>
+                  <td>Richiesta disdetta con preavviso</td>
+                  <td>Francesca Viola</td>
+                  <td>+6 giorni</td>
+                  <td><span class="tag ok">In valutazione</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Profilo Utente 360 (preview)</h2>
+              <small>pattern riutilizzabile in tutte le viste utente</small>
+            </div>
+
+            <div class="member-header">
+              <div class="avatar">AP</div>
+              <div class="member-meta">
+                <strong>Antonio Petricciuoli</strong>
+                <small>Abbonamento Gold • Scadenza 26/08/2026 • Crediti servizi: 8</small>
+              </div>
+              <span class="tag ok">Accesso attivo</span>
+            </div>
+
+            <div class="quick">
+              <button class="chip">Nuova vendita</button>
+              <button class="chip">Registra pagamento</button>
+              <button class="chip">Sblocca varco</button>
+              <button class="chip">Invia reminder certificato</button>
+            </div>
+
+            <div class="timeline">
+              <article class="event"><time>08:21</time><div>Ingresso valido da QR App (Tornello 2)</div></article>
+              <article class="event"><time>08:23</time><div>Doccia uomini abilitata (credito servizio -1)</div></article>
+              <article class="event"><time>Ieri</time><div>Prenotazione corso Functional confermata</div></article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="stack">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Alert Real-time</h2>
+              <small>filiale corrente</small>
+            </div>
+            <div class="alert-list">
+              <article class="alert err">
+                <strong>Controller docce offline</strong>
+                <span>Area spogliatoio donne • da 3 min</span>
+              </article>
+              <article class="alert warn">
+                <strong>Picco accessi previsto</strong>
+                <span>17:30-19:00 • suggerito presidio reception</span>
+              </article>
+              <article class="alert ok">
+                <strong>Campagna rinnovi inviata</strong>
+                <span>84 utenti notificati con push + email</span>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Controllo Dispositivi (Optional)</h2>
+              <small>azioni manuali tracciate</small>
+            </div>
+            <div class="device-grid">
+              <div class="device"><span>Tornello 1</span><span class="dot"></span></div>
+              <div class="device"><span>Tornello 2</span><span class="dot"></span></div>
+              <div class="device"><span>Docce uomini</span><span class="dot"></span></div>
+              <div class="device"><span>Docce donne</span><span class="dot off"></span></div>
+              <div class="device"><span>Phon uomini</span><span class="dot"></span></div>
+              <div class="device"><span>Phon donne</span><span class="dot"></span></div>
+            </div>
+            <p class="legend">Ogni comando richiede ruolo autorizzato + motivazione + audit log.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Shortcut Reception</h2>
+            </div>
+            <div class="quick">
+              <button class="chip">Nuovo utente</button>
+              <button class="chip">Nuovo incasso</button>
+              <button class="chip">Prenotazione rapida</button>
+              <button class="chip">Associa badge</button>
+              <button class="chip">Ristampa ricevuta</button>
+              <button class="chip">Apri ticket tecnico</button>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gymbro - Mockup Mobile App</title>
+  <style>
+    :root {
+      --ink: #102035;
+      --muted: #5f7088;
+      --bg: #f5f8ff;
+      --card: #ffffff;
+      --primary: #0f8b8d;
+      --accent: #ff6b35;
+      --soft-primary: #e6f7f5;
+      --soft-accent: #ffece4;
+      --soft-slate: #eef4ff;
+      --ok: #1ea672;
+      --danger: #d7263d;
+      --radius: 24px;
+      --shadow: 0 14px 32px rgba(18, 37, 60, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(900px 400px at 15% -20%, #dff7ef 0%, transparent 70%),
+        radial-gradient(900px 500px at 120% 10%, #ffe8da 0%, transparent 64%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .page-head {
+      max-width: 1100px;
+      margin: 0 auto 20px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .page-head h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+    }
+
+    .page-head p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .phone-wrap {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 26px;
+      padding: 14px;
+      box-shadow: 0 8px 28px rgba(18, 37, 60, 0.1);
+      animation: rise 500ms ease-out;
+    }
+
+    .phone-label {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .phone {
+      background: #081423;
+      border-radius: 32px;
+      padding: 12px;
+      min-height: 700px;
+      box-shadow: var(--shadow);
+      display: flex;
+    }
+
+    .screen {
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+      border-radius: 24px;
+      flex: 1;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px 6px;
+      font-size: 0.74rem;
+      color: #26364d;
+      font-weight: 600;
+    }
+
+    .header {
+      padding: 10px 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-row h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .tag.primary { background: var(--soft-primary); color: #0a6668; }
+    .tag.accent { background: var(--soft-accent); color: #7e391d; }
+
+    .body {
+      padding: 8px 14px 12px;
+      overflow: auto;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid #e6edf7;
+      box-shadow: 0 4px 12px rgba(16, 32, 53, 0.05);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+    }
+
+    .muted { color: var(--muted); font-size: 0.8rem; }
+
+    .qr {
+      background: linear-gradient(135deg, #11355b, #0f8b8d);
+      color: #fff;
+      border: none;
+    }
+
+    .qr-grid {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .qr-code {
+      width: 92px;
+      height: 92px;
+      border-radius: 12px;
+      background:
+        repeating-linear-gradient(0deg, #fff 0 8px, #ccd6e8 8px 12px),
+        repeating-linear-gradient(90deg, #fff 0 8px, #ccd6e8 8px 12px);
+      border: 2px solid rgba(255,255,255,.45);
+    }
+
+    .list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      padding: 8px;
+      border-radius: 10px;
+      background: #f8fbff;
+      border: 1px solid #edf2fb;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .pill.ok { background: #dbf7eb; color: #066b44; }
+    .pill.warn { background: #fff4d8; color: #8b6500; }
+    .pill.err { background: #ffe2e6; color: #9b1c2e; }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .cta {
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .cta.primary { background: var(--primary); color: #fff; }
+    .cta.accent { background: var(--accent); color: #fff; }
+    .cta.soft { background: var(--soft-slate); color: var(--ink); }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick {
+      border-radius: 14px;
+      padding: 11px;
+      font-size: 0.81rem;
+      border: 1px solid #dce8f6;
+      background: #fff;
+      font-weight: 700;
+      min-height: 68px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+    }
+
+    .quick.primary { background: var(--soft-primary); border-color: #c7e8e3; }
+    .quick.accent { background: var(--soft-accent); border-color: #ffd5c4; }
+
+    .bottom-nav {
+      border-top: 1px solid #dce7f7;
+      padding: 8px 10px 10px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-item {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #5b6e87;
+      padding: 6px 2px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .nav-item.active {
+      background: #eaf5ff;
+      color: #123b66;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .phone { min-height: 640px; }
+      body { padding: 14px; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-head">
+    <h1>Mockup App Mobile - Esperienza Utente + Staff Rapido</h1>
+    <p>Unica app con percorsi separati: uso quotidiano per iscritti e azioni operative immediate per lo staff.</p>
+  </header>
+
+  <main class="grid">
+    <section class="phone-wrap">
+      <p class="phone-label">Modalita Utente</p>
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>09:41</span><span>5G • 93%</span></div>
+
+          <div class="header">
+            <div class="title-row">
+              <h2>Ciao Antonio</h2>
+              <span class="tag primary">Abbonamento Attivo</span>
+            </div>
+          </div>
+
+          <div class="body">
+            <article class="card qr">
+              <h3>Pass di accesso</h3>
+              <div class="qr-grid">
+                <div class="qr-code"></div>
+                <div>
+                  <div>Ingresso valido fino alle 22:00</div>
+                  <div class="muted">Tornello 1-2 abilitati • Crediti servizi: 8</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Lezione prenotata oggi</h3>
+              <div class="row">
+                <span>Functional Training • 18:30</span>
+                <span class="pill ok">Confermata</span>
+              </div>
+              <div class="muted">Trainer: Luca I. • Sala 2</div>
+            </article>
+
+            <article class="card">
+              <h3>Scheda di oggi</h3>
+              <div class="row"><span>Giorno 2 - Forza e core</span><span>42 min</span></div>
+              <div class="cta-grid">
+                <button class="cta primary">Apri allenamento</button>
+                <button class="cta soft">Video esercizi</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Wallet e documenti</h3>
+              <div class="list">
+                <div class="row"><span>Prossimo rinnovo</span><strong>26/08/2026</strong></div>
+                <div class="row"><span>Certificato medico</span><span class="pill warn">30 giorni</span></div>
+                <div class="row"><span>Ultima ricevuta</span><strong>€ 59,00</strong></div>
+              </div>
+              <div class="cta-grid" style="margin-top:8px;">
+                <button class="cta accent">Rinnova ora</button>
+                <button class="cta soft">Scarica ricevuta</button>
+              </div>
+            </article>
+          </div>
+
+          <nav class="bottom-nav">
+            <div class="nav-item active">Home</div>
+            <div class="nav-item">Prenota</div>
+            <div class="nav-item">Allenati</div>
+            <div class="nav-item">Wallet</div>
+            <div class="nav-item">Profilo</div>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <section class="phone-wrap">
+      <p class="phone-label">Modalita Staff Rapida</p>
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>09:41</span><span>Wi-Fi • 88%</span></div>
+
+          <div class="header">
+            <div class="title-row">
+              <h2>Reception Fast Ops</h2>
+              <span class="tag accent">Staff</span>
+            </div>
+          </div>
+
+          <div class="body">
+            <article class="card">
+              <h3>Azioni immediate</h3>
+              <div class="quick-actions">
+                <div class="quick primary">Scansiona QR
+                  <span class="muted">Check-in in &lt; 3 sec</span>
+                </div>
+                <div class="quick accent">Sblocca tornello
+                  <span class="muted">Con motivazione</span>
+                </div>
+                <div class="quick">Incasso rapido
+                  <span class="muted">Carta / POS / cash</span>
+                </div>
+                <div class="quick">Verifica documenti
+                  <span class="muted">Certificati e consensi</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Stato dispositivi</h3>
+              <div class="list">
+                <div class="row"><span>Tornello 1</span><span class="pill ok">Online</span></div>
+                <div class="row"><span>Tornello 2</span><span class="pill ok">Online</span></div>
+                <div class="row"><span>Docce donne</span><span class="pill err">Offline</span></div>
+                <div class="row"><span>Phon uomini</span><span class="pill ok">Online</span></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Coda reception</h3>
+              <div class="list">
+                <div class="row"><span>Rinnovo in scadenza - M. Rossi</span><span class="pill warn">Oggi</span></div>
+                <div class="row"><span>Certificato mancante - G. Ferraro</span><span class="pill err">Urgente</span></div>
+                <div class="row"><span>Prenotazione pending - Sala 3</span><span class="pill ok">Gestibile</span></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Sblocco manuale dispositivo</h3>
+              <div class="row"><span>Target</span><strong>Tornello 2</strong></div>
+              <div class="row"><span>Motivazione</span><span class="muted">Utente senza smartphone</span></div>
+              <div class="cta-grid">
+                <button class="cta accent">Conferma + Log</button>
+                <button class="cta soft">Annulla</button>
+              </div>
+            </article>
+          </div>
+
+          <nav class="bottom-nav">
+            <div class="nav-item active">Ops</div>
+            <div class="nav-item">Check-in</div>
+            <div class="nav-item">Device</div>
+            <div class="nav-item">Pagamenti</div>
+            <div class="nav-item">Utenti</div>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
