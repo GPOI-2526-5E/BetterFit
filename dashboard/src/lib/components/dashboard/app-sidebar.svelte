@@ -113,7 +113,7 @@
 	<Sidebar.Content class="px-2 py-2 group-data-[collapsible=icon]:px-0">
 		<NavMain
 			items={data.navMain}
-			groupLabel=""
+			groupLabel="dashboard"
 			comingSoonSuffix={m.common_coming_soon()}
 			currentPath={page.url.pathname}
 			currentHash={page.url.hash}

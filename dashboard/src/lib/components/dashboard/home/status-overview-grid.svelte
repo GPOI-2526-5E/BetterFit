@@ -12,7 +12,6 @@
 		CardHeader,
 		CardTitle
 	} from '$lib/components/ui/card/index.js';
-	import type { HomeStatusCard } from './types';
 
 	let { cards }: { cards: HomeStatusCard[] } = $props();
 

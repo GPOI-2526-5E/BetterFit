@@ -9,7 +9,9 @@
 	import TasksTableCard from '$lib/components/dashboard/home/tasks-table-card.svelte';
 	import TimelinePreviewCard from '$lib/components/dashboard/home/timeline-preview-card.svelte';
 	import { fetchDashboardHomePlaceholder } from '$lib/data/dashboard-home-placeholder';
-	import { center } from '$lib/stores/center-selection.svelte';
+	import { useCenterSelectionStore } from '$lib/stores/CenterSelectionStoreProvider.svelte';
+
+	const center = useCenterSelectionStore();
 
 	const homeQuery = createQuery(() => ({
 		queryKey: ['dashboard', 'home-overview', center.selectedId],

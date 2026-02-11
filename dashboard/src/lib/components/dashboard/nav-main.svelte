@@ -50,7 +50,7 @@
 </script>
 
 <Sidebar.Group>
-	<Sidebar.GroupLabel>{groupLabel}</Sidebar.GroupLabel>
+	<!--<Sidebar.GroupLabel>{groupLabel}</Sidebar.GroupLabel>-->
 	<Sidebar.Menu>
 		{#each items as item (item.title)}
 			{#if item.items && item.items.length > 0}

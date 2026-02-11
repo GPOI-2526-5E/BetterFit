@@ -7,6 +7,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import CenterSelectionStoreProvider from '$lib/stores/CenterSelectionStoreProvider.svelte';
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -24,12 +25,14 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<SidebarProvider>
-		<AppSidebar />
-		<SidebarInset class="md:rounded-[20px]">
-			{@render children()}
-		</SidebarInset>
-	</SidebarProvider>
+	<CenterSelectionStoreProvider>
+		<SidebarProvider>
+			<AppSidebar />
+			<SidebarInset class="md:rounded-[20px]">
+				{@render children()}
+			</SidebarInset>
+		</SidebarProvider>
+	</CenterSelectionStoreProvider>
 </QueryClientProvider>
 <div style="display:none">
 	{#each locales as locale}

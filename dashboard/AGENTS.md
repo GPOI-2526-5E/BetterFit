@@ -21,3 +21,9 @@ You MUST use this tool whenever writing Svelte code before sending it to the use
 
 Generates a Svelte Playground link with the provided code.
 After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
+
+# Shadcn Documentation:
+The dashboard project uses the Shadcn UI library. llm-optimized documentation is available on `https://www.shadcn-svelte.com/llms.txt`. Always refer to this documentation when working with UI components in the dashboard.
+
+# Website stack/brand guidelines:
+Check `docs/initialization.md` for the website stack and brand guidelines. Always adhere to these guidelines when writing code or documentation.

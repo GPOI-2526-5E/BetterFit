@@ -8,7 +8,6 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { SidebarTrigger } from '$lib/components/ui/sidebar/index.js';
 	import * as m from '$lib/paraglide/messages.js';
-	import { center } from '$lib/stores/center-selection.svelte';
 
 	const user = {
 		name: 'Antonio Petricciuoli',

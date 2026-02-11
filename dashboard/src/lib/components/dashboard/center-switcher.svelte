@@ -7,7 +7,9 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import * as m from '$lib/paraglide/messages.js';
-	import { center, fitnessCenters } from '$lib/stores/center-selection.svelte';
+	import { useCenterSelectionStore } from '$lib/stores/CenterSelectionStoreProvider.svelte';
+
+	const center = useCenterSelectionStore();
 
 	const sidebar = useSidebar();
 
@@ -33,8 +35,8 @@
 							<Building2Icon class="size-4" />
 						</div>
 						<div class="grid flex-1 text-start text-sm leading-tight">
-							<span class="truncate font-semibold">{center.selected.name}</span>
-							<span class="truncate text-xs text-sidebar-foreground/70">{center.selected.city}</span
+							<span class="truncate font-semibold">{center.selected?.name}</span>
+							<span class="truncate text-xs text-sidebar-foreground/70">{center.selected?.city}</span
 							>
 						</div>
 						<ChevronsUpDownIcon class="ms-auto size-4" />
@@ -50,7 +52,7 @@
 				<DropdownMenu.Label class="text-xs text-muted-foreground"
 					>{m.center_switcher_title()}</DropdownMenu.Label
 				>
-				{#each fitnessCenters as acenter, index (acenter.id)}
+				{#each center.centers as acenter, index (acenter.id)}
 					<DropdownMenu.Item
 						onclick={() => (center.selectedId = acenter.id)}
 						class="flex items-center justify-between gap-3 p-2"

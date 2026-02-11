@@ -11,7 +11,9 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { fetchAccessLivePlaceholder } from '$lib/data/access-live-placeholder';
 	import * as m from '$lib/paraglide/messages.js';
-	import { center } from '$lib/stores/center-selection.svelte';
+	import { useCenterSelectionStore } from '$lib/stores/CenterSelectionStoreProvider.svelte';
+
+	const center = useCenterSelectionStore();
 
 	const accessLiveQuery = createQuery(() => ({
 		queryKey: ['dashboard', 'access-live', center.selectedId],
