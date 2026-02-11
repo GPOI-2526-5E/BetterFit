@@ -1,0 +1,37 @@
+services:
+  betterfit:
+    image: betterfit
+    build:
+      context: .
+      dockerfile: Betterfit/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=betterfit;Username=betterfit;Password=betterfit_dev_password
+      Jwt__Issuer: Betterfit.Api
+      Jwt__Audience: Betterfit.Client
+      Jwt__Key: betterfit_local_dev_super_secret_key_2026!
+      Jwt__ExpiresMinutes: 120
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: docker.io/postgres:16-alpine
+    environment:
+      POSTGRES_DB: betterfit
+      POSTGRES_USER: betterfit
+      POSTGRES_PASSWORD: betterfit_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U betterfit -d betterfit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgresql-data:

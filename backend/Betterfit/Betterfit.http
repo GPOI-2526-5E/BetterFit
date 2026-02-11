@@ -1,0 +1,87 @@
+@Betterfit_HostAddress = http://localhost:5299
+@token = replace-with-jwt
+@gymId = replace-with-gym-id
+@roleId = replace-with-role-id
+@ownerRoleId = replace-with-owner-role-id
+@checkinsApprovePermissionId = a5c55147-1d99-433e-b022-5164d7eff76d
+@membersReadPermissionId = 32291f01-7fe4-44cf-9f1c-82bbf8a37295
+@membersWritePermissionId = f2895883-e3b6-4f31-95ba-e8aa183d9a31
+
+### Register user
+POST {{Betterfit_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "owner@betterfit.local",
+  "password": "Betterfit123",
+  "fullName": "Gym Owner"
+}
+
+### Login
+POST {{Betterfit_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "owner@betterfit.local",
+  "password": "Betterfit123"
+}
+
+### Create gym (seeds default roles and assigns creator as Owner)
+POST {{Betterfit_HostAddress}}/api/gyms
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Betterfit Downtown"
+}
+
+### List gyms you can read (permission-enforced)
+GET {{Betterfit_HostAddress}}/api/gyms
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### List permission catalog for this gym (requires roles:read in gym)
+GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/permissions/catalog
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### List roles for a gym (requires roles:read in gym)
+GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/roles
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create custom role in a gym using permission catalog IDs (requires roles:write in gym)
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Front Desk",
+  "description": "Handles check-ins and member support",
+  "permissions": [
+    { "permissionId": "{{membersReadPermissionId}}", "isAllowed": true },
+    { "permissionId": "{{membersWritePermissionId}}", "isAllowed": true },
+    { "permissionId": "{{checkinsApprovePermissionId}}", "isAllowed": true }
+  ]
+}
+
+### Assign user to gym with a specific gym role (requires members:write in gym)
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/assignments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "owner@betterfit.local",
+  "roleId": "{{roleId}}"
+}
+
+### Transfer ownership by assigning Owner role to another user
+### If the gym already has an owner, old owner is demoted and new owner is assigned atomically
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/assignments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "newowner@betterfit.local",
+  "roleId": "{{ownerRoleId}}"
+}

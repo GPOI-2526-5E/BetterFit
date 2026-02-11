@@ -1,0 +1,20 @@
+services:
+  db:
+    container_name: betterfit-postgres
+    image: docker.io/postgres:16-alpine
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_DB: betterfit
+      POSTGRES_USER: betterfit
+      POSTGRES_PASSWORD: betterfit_dev_password
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U betterfit -d betterfit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgresql-data:
