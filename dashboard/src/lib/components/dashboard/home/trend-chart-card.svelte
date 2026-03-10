@@ -51,6 +51,7 @@
 			<p class="text-xs text-muted-foreground">
 				{m.home_chart_updated_label()}
 				{metric.updatedAt}
+			<!---->
 			</p>
 		</div>
 	</CardHeader>
