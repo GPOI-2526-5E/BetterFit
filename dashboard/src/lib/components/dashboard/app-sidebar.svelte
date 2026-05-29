@@ -1,5 +1,6 @@
 <script lang="ts">
 	import BarChart3Icon from '@lucide/svelte/icons/bar-chart-3';
+	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
 	import CreditCardIcon from '@lucide/svelte/icons/credit-card';
 	import DoorOpenIcon from '@lucide/svelte/icons/door-open';
 	import DumbbellIcon from '@lucide/svelte/icons/dumbbell';
@@ -13,16 +14,37 @@
 	import * as m from '$lib/paraglide/messages.js';
 	import { SidebarMenuBadge } from '$lib/components/ui/sidebar/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { useCenterSelectionStore } from '$lib/stores/CenterSelectionStoreProvider.svelte';
+	import { useUserAuthenticationStore } from '$lib/stores/AuthenticationStoreProvider.svelte';
+	import { onMount } from 'svelte';
 	import CenterSwitcher from './center-switcher.svelte';
 	import NavMain from './nav-main.svelte';
 	import NavUser from './nav-user.svelte';
 
+	const center = useCenterSelectionStore();
+	const auth = useUserAuthenticationStore();
+	const navigationDisabled = $derived(
+		!center.isLoadingGyms && !center.gymsError && center.gyms.length === 0
+	);
+	const sidebarUser = $derived.by(() => {
+		const profile = auth.user?.account?.user;
+		const email = profile?.email?.trim() || auth.user?.user || 'account@betterfit.local';
+		const fallbackName =
+			email
+				.split('@')[0]
+				?.replace(/[._-]+/g, ' ')
+				.trim() || 'Betterfit account';
+		const fullName = profile?.fullName?.trim() || fallbackName;
+
+		return {
+			name: fullName,
+			email,
+			avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(fullName)}`
+		};
+	});
+
 	const data = $derived({
-		user: {
-			name: 'Antonio Petricciuoli',
-			email: 'antonio@betterfit.app',
-			avatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Antonio%20Petricciuoli'
-		},
+		user: sidebarUser,
 		navMain: [
 			{
 				title: m.nav_home(),
@@ -34,9 +56,8 @@
 				url: '/users',
 				icon: UsersIcon,
 				items: [
-					{ title: m.nav_user_search(), url: '/users', available: false },
-					{ title: m.nav_new_user(), url: '/users/new', available: false },
-					{ title: m.nav_memberships_expiring(), url: '/users/expiring', available: false }
+					{ title: m.nav_new_user(), url: '/users/new', available: true },
+					{ title: m.nav_memberships_expiring(), url: '/users/expiring', available: true }
 				]
 			},
 			{
@@ -44,9 +65,8 @@
 				url: '/access',
 				icon: DoorOpenIcon,
 				items: [
-					{ title: m.nav_access_live_monitor(), url: '/access/live', available: true },
-					{ title: m.nav_access_history(), url: '/access/history', available: false },
-					{ title: m.nav_quick_checkin(), url: '/access/checkin', available: false }
+					{ title: m.nav_access_history(), url: '/access/history', available: true },
+					{ title: m.nav_quick_checkin(), url: '/access/checkin', available: true }
 				]
 			},
 			{
@@ -54,9 +74,22 @@
 				url: '/sales',
 				icon: CreditCardIcon,
 				items: [
-					{ title: m.nav_new_sale(), url: '/sales/new', available: false },
-					{ title: m.nav_payments_receipts(), url: '/sales/payments', available: false },
-					{ title: m.nav_renewals(), url: '/sales/renewals', available: false }
+					{ title: m.nav_new_sale(), url: '/sales/new', available: true },
+					{ title: m.nav_payments_receipts(), url: '/sales/payments', available: true },
+					{ title: m.nav_renewals(), url: '/sales/renewals', available: true },
+					{ title: 'Listino vendite', url: '/sales/catalog', available: true }
+				]
+			},
+			{
+				title: 'Attivita',
+				url: '/activities',
+				icon: CalendarDaysIcon,
+				items: [
+					{ title: 'Desk operativo', url: '/activities#desk', available: true },
+					{ title: 'Catalogo attivita', url: '/activities#templates', available: true },
+					{ title: 'Agenda imminente', url: '/activities#sessions', available: true },
+					{ title: 'Registro sessioni', url: '/activities#registry', available: true },
+					{ title: 'Prenotazioni e presenze', url: '/activities#bookings', available: true }
 				]
 			},
 			{
@@ -64,9 +97,10 @@
 				url: '/training',
 				icon: DumbbellIcon,
 				items: [
-					{ title: m.nav_training_templates(), url: '/training/templates', available: false },
-					{ title: m.nav_training_builder(), url: '/training/builder', available: false },
-					{ title: m.nav_training_measurements(), url: '/training/measurements', available: false }
+					{ title: 'Piani assegnati', url: '/training#assigned', available: true },
+					{ title: m.nav_training_templates(), url: '/training#templates', available: true },
+					{ title: m.nav_training_builder(), url: '/training#builder', available: true },
+					{ title: m.nav_training_measurements(), url: '/training#measures', available: true }
 				]
 			},
 			{
@@ -74,9 +108,10 @@
 				url: '/crm',
 				icon: MegaphoneIcon,
 				items: [
-					{ title: m.nav_crm_lead_pipeline(), url: '/crm/pipeline', available: false },
-					{ title: m.nav_crm_campaigns(), url: '/crm/campaigns', available: false },
-					{ title: m.nav_crm_automations(), url: '/crm/automations', available: false }
+					{ title: 'Pipeline lead', url: '/crm#pipeline-board', available: true },
+					{ title: 'Dettaglio e task', url: '/crm#pipeline-detail', available: true },
+					{ title: m.nav_crm_campaigns(), url: '/crm/campaigns', available: true },
+					{ title: m.nav_crm_automations(), url: '/crm/automations', available: true }
 				]
 			},
 			{
@@ -84,9 +119,12 @@
 				url: '/analytics',
 				icon: BarChart3Icon,
 				items: [
-					{ title: m.nav_reports_kpi_dashboard(), url: '/analytics/kpi', available: false },
-					{ title: m.nav_reports_retention_churn(), url: '/analytics/churn', available: false },
-					{ title: m.nav_reports_export(), url: '/analytics/export', available: false }
+					{ title: 'Dashboard KPI', url: '/analytics#kpi-summary', available: true },
+					{ title: 'Pipeline lead', url: '/analytics#lead-pipeline', available: true },
+					{ title: 'Attivita in arrivo', url: '/analytics#upcoming-activities', available: true },
+					{ title: 'Operativita sedi', url: '/analytics#location-operations', available: true },
+					{ title: m.nav_reports_retention_churn(), url: '/analytics/churn', available: true },
+					{ title: m.nav_reports_export(), url: '/analytics/export', available: true }
 				]
 			},
 			{
@@ -94,12 +132,20 @@
 				url: '/settings',
 				icon: SettingsIcon,
 				items: [
-					{ title: m.nav_settings_team(), url: '/settings/team', available: false },
-					{ title: m.nav_settings_permissions(), url: '/settings/roles', available: false },
-					{ title: m.nav_settings_integrations(), url: '/settings/integrations', available: false }
+					{ title: 'Sedi e orari', url: '/settings#locations', available: true },
+					{ title: m.nav_settings_team(), url: '/settings#team', available: true },
+					{ title: m.nav_settings_permissions(), url: '/settings#roles', available: true },
+					{ title: 'Security policy', url: '/settings#security', available: true },
+					{ title: m.nav_settings_integrations(), url: '/settings/integrations', available: true }
 				]
 			}
 		]
+	});
+
+	onMount(() => {
+		if (auth.user && !auth.user.account?.user) {
+			void auth.refreshCurrentUser();
+		}
 	});
 </script>
 
@@ -117,6 +163,8 @@
 			comingSoonSuffix={m.common_coming_soon()}
 			currentPath={page.url.pathname}
 			currentHash={page.url.hash}
+			disabled={navigationDisabled}
+			disabledSuffix={m.dashboard_navigation_disabled_suffix()}
 		/>
 
 		<Sidebar.Group class="md:hidden">
@@ -124,14 +172,22 @@
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton tooltipContent={m.quick_action_new_sale()} isActive={false}>
+						<Sidebar.MenuButton
+							tooltipContent={m.quick_action_new_sale()}
+							isActive={false}
+							aria-disabled={navigationDisabled || undefined}
+						>
 							<PlusCircleIcon />
 							<span>{m.quick_action_new_sale()}</span>
 						</Sidebar.MenuButton>
 						<SidebarMenuBadge>{m.common_desk()}</SidebarMenuBadge>
 					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton tooltipContent={m.quick_action_unlock_turnstile()} isActive={false}>
+						<Sidebar.MenuButton
+							tooltipContent={m.quick_action_unlock_turnstile()}
+							isActive={false}
+							aria-disabled={navigationDisabled || undefined}
+						>
 							<ShieldIcon />
 							<span>{m.quick_action_unlock_turnstile()}</span>
 						</Sidebar.MenuButton>

@@ -5,7 +5,7 @@ namespace Betterfit.Contracts.Auth;
 /// <summary>
 /// Request payload used to authenticate an existing user.
 /// </summary>
-public class LoginRequest
+public sealed class LoginRequest
 {
     /// <summary>
     /// Registered email address of the user.

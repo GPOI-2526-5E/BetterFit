@@ -8,7 +8,9 @@
 		currentPath,
 		currentHash,
 		groupLabel,
-		comingSoonSuffix
+		comingSoonSuffix,
+		disabled = false,
+		disabledSuffix
 	}: {
 		items: {
 			title: string;
@@ -26,6 +28,8 @@
 		currentHash: string;
 		groupLabel: string;
 		comingSoonSuffix: string;
+		disabled?: boolean;
+		disabledSuffix?: string;
 	} = $props();
 
 	const isTopLevelActive = (itemUrl: string): boolean => {
@@ -44,6 +48,7 @@
 		url: string;
 		items?: { title: string; url: string; available?: boolean }[];
 	}) => {
+		if (disabled) return false;
 		if (isTopLevelActive(item.url)) return true;
 		return Boolean(item.items?.some((subItem) => isSubItemActive(subItem.url)));
 	};
@@ -57,32 +62,52 @@
 				<Collapsible.Root open={isGroupOpen(item)} class="group/collapsible">
 					{#snippet child({ props })}
 						<Sidebar.MenuItem {...props}>
+							<Sidebar.MenuButton
+								tooltipContent={item.items?.every((subItem) => subItem.available === false)
+									? `${item.title} (${comingSoonSuffix})`
+									: disabled && disabledSuffix
+										? `${item.title} (${disabledSuffix})`
+										: item.title}
+								isActive={!disabled && isTopLevelActive(item.url)}
+								aria-disabled={disabled || undefined}
+							>
+								{#snippet child({ props: buttonProps })}
+									{#if disabled}
+										<span {...buttonProps}>
+											{#if item.icon}
+												<item.icon />
+											{/if}
+											<span>{item.title}</span>
+										</span>
+									{:else}
+										<a href={item.url} {...buttonProps}>
+											{#if item.icon}
+												<item.icon />
+											{/if}
+											<span>{item.title}</span>
+										</a>
+									{/if}
+								{/snippet}
+							</Sidebar.MenuButton>
 							<Collapsible.Trigger>
 								{#snippet child({ props: triggerProps })}
-									<Sidebar.MenuButton
+									<Sidebar.MenuAction
 										{...triggerProps}
-										tooltipContent={item.items?.every((subItem) => subItem.available === false)
-											? `${item.title} (${comingSoonSuffix})`
-											: item.title}
-										isActive={isTopLevelActive(item.url)}
+										aria-label={`Apri ${item.title}`}
+										aria-disabled={disabled || undefined}
+										class="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
 									>
-										{#if item.icon}
-											<item.icon />
-										{/if}
-										<span>{item.title}</span>
-										<ChevronRightIcon
-											class="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-										/>
-									</Sidebar.MenuButton>
+										<ChevronRightIcon />
+									</Sidebar.MenuAction>
 								{/snippet}
 							</Collapsible.Trigger>
-							<Collapsible.Content>
+							<Collapsible.Content class="sidebar-submenu-motion">
 								<Sidebar.MenuSub>
 									{#each item.items ?? [] as subItem (subItem.title)}
 										<Sidebar.MenuSubItem>
-											<Sidebar.MenuSubButton isActive={isSubItemActive(subItem.url)}>
+											<Sidebar.MenuSubButton isActive={!disabled && isSubItemActive(subItem.url)}>
 												{#snippet child({ props: subProps })}
-													{#if subItem.available === false}
+													{#if disabled || subItem.available === false}
 														<span class="opacity-55" {...subProps}>
 															<span>{subItem.title}</span>
 														</span>
@@ -102,14 +127,29 @@
 				</Collapsible.Root>
 			{:else}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton tooltipContent={item.title} isActive={isTopLevelActive(item.url)}>
+					<Sidebar.MenuButton
+						tooltipContent={disabled && disabledSuffix
+							? `${item.title} (${disabledSuffix})`
+							: item.title}
+						isActive={!disabled && isTopLevelActive(item.url)}
+						aria-disabled={disabled || undefined}
+					>
 						{#snippet child({ props })}
-							<a href={item.url} {...props}>
-								{#if item.icon}
-									<item.icon />
-								{/if}
-								<span>{item.title}</span>
-							</a>
+							{#if disabled}
+								<span {...props}>
+									{#if item.icon}
+										<item.icon />
+									{/if}
+									<span>{item.title}</span>
+								</span>
+							{:else}
+								<a href={item.url} {...props}>
+									{#if item.icon}
+										<item.icon />
+									{/if}
+									<span>{item.title}</span>
+								</a>
+							{/if}
 						{/snippet}
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>

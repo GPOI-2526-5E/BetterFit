@@ -38,19 +38,25 @@ public sealed class GymPermissionAuthorizationHandler : AuthorizationHandler<Gym
             return;
         }
 
-        var evaluation = await _permissionService.EvaluateGymPermissionAsync(
+        var scope = await _permissionService.GetGymPermissionScopeAsync(
             userId,
             gymId,
             requirement.Resource,
             requirement.Action,
             httpContext.RequestAborted);
 
-        switch (evaluation)
+        switch (requirement.MinimumScope)
         {
-            case PermissionEvaluationResult.Allowed:
+            case GymPermissionMinimumScope.TenantWide when scope.HasTenantWideAccess:
                 context.Succeed(requirement);
                 break;
-            case PermissionEvaluationResult.Denied:
+            case GymPermissionMinimumScope.TenantWide when scope.HasAnyDenials:
+                context.Fail();
+                break;
+            case GymPermissionMinimumScope.AnyAssignment when scope.HasAnyAccess:
+                context.Succeed(requirement);
+                break;
+            case GymPermissionMinimumScope.AnyAssignment when scope.HasAnyDenials:
                 context.Fail();
                 break;
         }

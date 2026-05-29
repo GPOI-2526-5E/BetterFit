@@ -11,24 +11,30 @@ public sealed class BearerAuthOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
+        var actionAttributes = context.MethodInfo.GetCustomAttributes(inherit: true);
+        var controllerAttributes = context.MethodInfo.DeclaringType?.GetCustomAttributes(inherit: true) ?? [];
         var endpointMetadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
 
-        var allowsAnonymous = endpointMetadata.OfType<AllowAnonymousAttribute>().Any();
+        var allowsAnonymous =
+            actionAttributes.OfType<IAllowAnonymous>().Any()
+            || controllerAttributes.OfType<IAllowAnonymous>().Any()
+            || endpointMetadata.OfType<IAllowAnonymous>().Any();
+
         if (allowsAnonymous)
         {
+            operation.Security = [];
             return;
         }
 
-        var requiresAuthorize = endpointMetadata.OfType<AuthorizeAttribute>().Any();
+        var requiresAuthorize =
+            actionAttributes.OfType<IAuthorizeData>().Any()
+            || controllerAttributes.OfType<IAuthorizeData>().Any()
+            || endpointMetadata.OfType<IAuthorizeData>().Any();
+
         if (!requiresAuthorize)
         {
+            operation.Security = [];
             return;
         }
-
-        operation.Security ??= [];
-        operation.Security.Add(new OpenApiSecurityRequirement
-        {
-            [new OpenApiSecuritySchemeReference("Bearer", null!, null)] = []
-        });
     }
 }

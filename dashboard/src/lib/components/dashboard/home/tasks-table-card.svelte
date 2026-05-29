@@ -37,31 +37,40 @@
 
 <Card>
 	<CardHeader class="border-b border-border/70">
-		<CardTitle>{m.home_priority_queue_title()}</CardTitle>
-		<CardDescription>{m.home_priority_queue_desc()}</CardDescription>
+		<CardTitle>Coda operativa</CardTitle>
+		<CardDescription>Azioni concrete generate dai dati reali del tenant corrente.</CardDescription>
 	</CardHeader>
 	<CardContent class="pt-4">
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead>{m.table_task()}</TableHead>
-					<TableHead>{m.table_user()}</TableHead>
-					<TableHead>{m.table_due()}</TableHead>
-					<TableHead>{m.table_status()}</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{#each tasks as task}
+		{#if tasks.length === 0}
+			<div class="rounded-[14px] border border-dashed border-border bg-secondary/20 px-4 py-8 text-center">
+				<p class="text-sm font-semibold">Nessuna task urgente nel perimetro corrente</p>
+				<p class="mt-2 text-sm text-muted-foreground">
+					Quando ci saranno rinnovi, accessi negati o pagamenti da recuperare, appariranno qui.
+				</p>
+			</div>
+		{:else}
+			<Table>
+				<TableHeader>
 					<TableRow>
-						<TableCell class="max-w-[280px] truncate font-medium">{task.task}</TableCell>
-						<TableCell>{task.member}</TableCell>
-						<TableCell>{task.due}</TableCell>
-						<TableCell>
-							<Badge variant={taskBadge(task.status)}>{taskLabel(task.status)}</Badge>
-						</TableCell>
+						<TableHead>{m.table_task()}</TableHead>
+						<TableHead>{m.table_user()}</TableHead>
+						<TableHead>{m.table_due()}</TableHead>
+						<TableHead>{m.table_status()}</TableHead>
 					</TableRow>
-				{/each}
-			</TableBody>
-		</Table>
+				</TableHeader>
+				<TableBody>
+					{#each tasks as task}
+						<TableRow>
+							<TableCell class="max-w-[280px] truncate font-medium">{task.task}</TableCell>
+							<TableCell>{task.member}</TableCell>
+							<TableCell>{task.due}</TableCell>
+							<TableCell>
+								<Badge variant={taskBadge(task.status)}>{taskLabel(task.status)}</Badge>
+							</TableCell>
+						</TableRow>
+					{/each}
+				</TableBody>
+			</Table>
+		{/if}
 	</CardContent>
 </Card>

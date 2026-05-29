@@ -2,17 +2,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Betterfit.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Betterfit.Services.Auth;
 
-public class JwtTokenService : IJwtTokenService
+public sealed class JwtTokenService : IJwtTokenService
 {
     private readonly JwtOptions _jwtOptions;
 
-    public JwtTokenService(JwtOptions jwtOptions)
+    public JwtTokenService(IOptions<JwtOptions> jwtOptions)
     {
-        _jwtOptions = jwtOptions;
+        _jwtOptions = jwtOptions.Value;
     }
 
     public TokenResult GenerateToken(ApplicationUser user)
@@ -49,3 +50,4 @@ public class JwtTokenService : IJwtTokenService
         return new TokenResult(accessToken, expiresAt);
     }
 }
+

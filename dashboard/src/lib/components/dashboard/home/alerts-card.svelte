@@ -29,20 +29,29 @@
 
 <Card>
 	<CardHeader class="border-b border-border/70">
-		<CardTitle>{m.home_alerts_title()}</CardTitle>
-		<CardDescription>{m.home_alerts_desc()}</CardDescription>
+		<CardTitle>Alert operativi</CardTitle>
+		<CardDescription>Segnali da monitorare su incassi, rinnovi e accessi della giornata.</CardDescription>
 	</CardHeader>
 	<CardContent class="space-y-3 pt-4">
-		{#each alerts as alert}
-			<div
-				class="flex items-start justify-between gap-3 rounded-[10px] border border-border bg-background p-3"
-			>
-				<div class="min-w-0 flex-1">
-					<p class="truncate text-sm font-semibold">{alert.title}</p>
-					<p class="mt-1 text-xs text-muted-foreground">{alert.description}</p>
-				</div>
-				<Badge variant={alertBadge(alert.status)}>{alertLabel(alert.status)}</Badge>
+		{#if alerts.length === 0}
+			<div class="rounded-[14px] border border-dashed border-border bg-secondary/20 px-4 py-8 text-center">
+				<p class="text-sm font-semibold">Nessun alert aperto</p>
+				<p class="mt-2 text-sm text-muted-foreground">
+					La situazione corrente non mostra anomalie o carichi amministrativi rilevanti.
+				</p>
 			</div>
-		{/each}
+		{:else}
+			{#each alerts as alert}
+				<div
+					class="flex items-start justify-between gap-3 rounded-[10px] border border-border bg-background p-3"
+				>
+					<div class="min-w-0 flex-1">
+						<p class="truncate text-sm font-semibold">{alert.title}</p>
+						<p class="mt-1 text-xs text-muted-foreground">{alert.description}</p>
+					</div>
+					<Badge variant={alertBadge(alert.status)}>{alertLabel(alert.status)}</Badge>
+				</div>
+			{/each}
+		{/if}
 	</CardContent>
 </Card>

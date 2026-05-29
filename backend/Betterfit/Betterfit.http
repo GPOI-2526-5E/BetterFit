@@ -1,9 +1,14 @@
 @Betterfit_HostAddress = http://localhost:5299
 @token = replace-with-jwt
 @gymId = replace-with-gym-id
-@roleId = replace-with-role-id
+@membershipId = replace-with-membership-id
+@roleId = replace-with-staff-role-id
 @ownerRoleId = replace-with-owner-role-id
-@checkinsApprovePermissionId = a5c55147-1d99-433e-b022-5164d7eff76d
+@downtownLocationId = replace-with-downtown-location-id
+@uptownLocationId = replace-with-uptown-location-id
+@claimToken = replace-with-claim-token
+@verificationToken = replace-with-verification-token
+@twoFactorChallengeToken = replace-with-two-factor-challenge-token
 @membersReadPermissionId = 32291f01-7fe4-44cf-9f1c-82bbf8a37295
 @membersWritePermissionId = f2895883-e3b6-4f31-95ba-e8aa183d9a31
 
@@ -26,7 +31,72 @@ Content-Type: application/json
   "password": "Betterfit123"
 }
 
-### Create gym (seeds default roles and assigns creator as Owner)
+### Rehydrate an email verification session after refresh or reopen
+POST {{Betterfit_HostAddress}}/api/auth/verification-session/status
+Content-Type: application/json
+
+{
+  "verificationToken": "{{verificationToken}}"
+}
+
+### Verify email with a confirmation code
+POST {{Betterfit_HostAddress}}/api/auth/verify-email-code
+Content-Type: application/json
+
+{
+  "verificationToken": "{{verificationToken}}",
+  "code": "123456"
+}
+
+### Resend email verification code
+POST {{Betterfit_HostAddress}}/api/auth/resend-email-code
+Content-Type: application/json
+
+{
+  "verificationToken": "{{verificationToken}}"
+}
+
+### Start 2FA setup after a setup-required auth response
+POST {{Betterfit_HostAddress}}/api/auth/2fa/setup
+Content-Type: application/json
+
+{
+  "challengeToken": "{{twoFactorChallengeToken}}"
+}
+
+### Enable 2FA after scanning the authenticator secret
+POST {{Betterfit_HostAddress}}/api/auth/2fa/enable
+Content-Type: application/json
+
+{
+  "challengeToken": "{{twoFactorChallengeToken}}",
+  "code": "123456"
+}
+
+### Verify a 2FA login challenge
+POST {{Betterfit_HostAddress}}/api/auth/2fa/verify
+Content-Type: application/json
+
+{
+  "challengeToken": "{{twoFactorChallengeToken}}",
+  "code": "123456"
+}
+
+### Use a recovery code instead of the authenticator app
+POST {{Betterfit_HostAddress}}/api/auth/2fa/recovery-code
+Content-Type: application/json
+
+{
+  "challengeToken": "{{twoFactorChallengeToken}}",
+  "recoveryCode": "ABCDE-FGHIJ"
+}
+
+### Current account session summary
+GET {{Betterfit_HostAddress}}/api/auth/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create tenant
 POST {{Betterfit_HostAddress}}/api/gyms
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -35,53 +105,156 @@ Content-Type: application/json
   "name": "Betterfit Downtown"
 }
 
-### List gyms you can read (permission-enforced)
+### List gyms you can read as staff
 GET {{Betterfit_HostAddress}}/api/gyms
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### List permission catalog for this gym (requires roles:read in gym)
+### Create a location for a gym
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/locations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Downtown Club",
+  "code": "DT",
+  "city": "San Francisco",
+  "countryCode": "US"
+}
+
+### List locations for a gym
+GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/locations
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Read tenant authentication policy
+GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/security/authentication-policy
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Update tenant authentication policy
+PUT {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/security/authentication-policy
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "requireTwoFactorForStaff": true,
+  "requireTwoFactorForMembers": false
+}
+
+### List permission catalog for a gym
 GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/permissions/catalog
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### List roles for a gym (requires roles:read in gym)
+### List staff roles for a gym
 GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/roles
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Create custom role in a gym using permission catalog IDs (requires roles:write in gym)
+### Create custom staff role
 POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/roles
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Front Desk",
-  "description": "Handles check-ins and member support",
+  "name": "Community Captain",
+  "description": "Can help with onboarding and light operations",
   "permissions": [
     { "permissionId": "{{membersReadPermissionId}}", "isAllowed": true },
-    { "permissionId": "{{membersWritePermissionId}}", "isAllowed": true },
-    { "permissionId": "{{checkinsApprovePermissionId}}", "isAllowed": true }
+    { "permissionId": "{{membersWritePermissionId}}", "isAllowed": true }
   ]
 }
 
-### Assign user to gym with a specific gym role (requires members:write in gym)
-POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/assignments
+### Create or update a member relationship
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/memberships
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "email": "owner@betterfit.local",
-  "roleId": "{{roleId}}"
+  "email": "alex@betterfit.local",
+  "locationIds": [
+    "{{downtownLocationId}}",
+    "{{uptownLocationId}}"
+  ],
+  "primaryLocationId": "{{downtownLocationId}}",
+  "status": "Active",
+  "source": "StaffInvite",
+  "taxCode": "RSSLXA90A01H501Z",
+  "notes": "VIP member",
+  "profile": {
+    "firstName": "Alex",
+    "lastName": "Rossi",
+    "birthDate": "1990-01-01"
+  }
 }
 
-### Transfer ownership by assigning Owner role to another user
-### If the gym already has an owner, old owner is demoted and new owner is assigned atomically
-POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/assignments
+### Create a pending-claim membership
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/memberships
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "newmember@betterfit.local",
+  "locationIds": [
+    "{{downtownLocationId}}"
+  ],
+  "status": "PendingClaim",
+  "source": "StaffInvite",
+  "profile": {
+    "firstName": "New",
+    "lastName": "Member"
+  }
+}
+
+### List memberships for a gym
+GET {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/memberships
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create a claim invitation for a pending membership
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/memberships/{{membershipId}}/invitations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "expiresInHours": 72
+}
+
+### Claim a membership invitation after login/register
+POST {{Betterfit_HostAddress}}/api/auth/claim-invitation
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "token": "{{claimToken}}"
+}
+
+### Create or update a staff assignment
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/staff-assignments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "alex@betterfit.local",
+  "roleId": "{{roleId}}",
+  "scopeType": "Location",
+  "scopeLocationId": "{{downtownLocationId}}",
+  "status": "Active",
+  "profile": {
+    "displayName": "Alex Reception",
+    "jobTitle": "Reception"
+  }
+}
+
+### Transfer ownership through staff assignment
+POST {{Betterfit_HostAddress}}/api/gyms/{{gymId}}/staff-assignments
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "email": "newowner@betterfit.local",
-  "roleId": "{{ownerRoleId}}"
+  "roleId": "{{ownerRoleId}}",
+  "scopeType": "Tenant",
+  "status": "Active"
 }

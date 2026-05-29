@@ -1,5 +1,20 @@
 bin/
+Betterfit/bin
 obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# Local .NET tool and package caches
+.dotnet/
+.nuget/
+
+# IDE metadata
+.vs/
+.idea/
+
+# Local build artifacts
+_codex_build_tmp/
+_codex_runtime_latest/
+_codex_seed_build/
+_codex_verify_build/

@@ -37,10 +37,10 @@ public class PermissionCatalogItem
     public string NormalizedAction { get; set; } = string.Empty;
 
     /// <summary>
-    /// Optional admin-facing description of this permission.
+    /// Stable translation key used by clients to localize the permission description.
     /// </summary>
     [MaxLength(500)]
-    public string? Description { get; set; }
+    public string? DescriptionKey { get; set; }
 
     /// <summary>
     /// Role permission assignments that reference this catalog entry.

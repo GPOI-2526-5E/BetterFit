@@ -1,0 +1,26 @@
+namespace Betterfit.Contracts.Training;
+
+public sealed record GymWorkoutAssessmentResponse(
+    Guid AssessmentId,
+    Guid GymId,
+    Guid MembershipId,
+    Guid LocationId,
+    string LocationName,
+    Guid? CoachAssignmentId,
+    string CoachName,
+    string MemberName,
+    string MemberEmail,
+    string RecordedByUserId,
+    string RecordedByUserName,
+    DateTime RecordedAtUtc,
+    decimal? WeightKg,
+    decimal? BodyFatPercentage,
+    decimal? LeanMassKg,
+    decimal? ChestCm,
+    decimal? WaistCm,
+    decimal? HipsCm,
+    decimal? ArmCm,
+    decimal? ThighCm,
+    decimal? CalfCm,
+    int? RestingHeartRateBpm,
+    string? Notes);

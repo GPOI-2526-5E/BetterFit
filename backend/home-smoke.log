@@ -1,0 +1,331 @@
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (21ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT p."Id", p."Action", p."Description", p."NormalizedAction", p."NormalizedResource", p."Resource"
+      FROM "PermissionCatalogItems" AS p
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (56ms) [Parameters=[@templates_Keys='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."CreatedAtUtc", g."CreatedByUserId", g."Description", g."GymId", g."IsDefault", g."Name", g."NormalizedName", r."Id", r."IsAllowed", r."PermissionId", r."RoleId"
+      FROM "GymRoles" AS g
+      LEFT JOIN "RolePermissions" AS r ON g."Id" = r."RoleId"
+      WHERE g."IsDefault" AND g."NormalizedName" = ANY (@templates_Keys)
+      ORDER BY g."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p7='?' (DbType = Guid), @p4='?' (DbType = Boolean), @p5='?' (DbType = Guid), @p6='?' (DbType = Guid), @p11='?' (DbType = Guid), @p8='?' (DbType = Boolean), @p9='?' (DbType = Guid), @p10='?' (DbType = Guid), @p15='?' (DbType = Guid), @p12='?' (DbType = Boolean), @p13='?' (DbType = Guid), @p14='?' (DbType = Guid), @p19='?' (DbType = Guid), @p16='?' (DbType = Boolean), @p17='?' (DbType = Guid), @p18='?' (DbType = Guid), @p23='?' (DbType = Guid), @p20='?' (DbType = Boolean), @p21='?' (DbType = Guid), @p22='?' (DbType = Guid), @p27='?' (DbType = Guid), @p24='?' (DbType = Boolean), @p25='?' (DbType = Guid), @p26='?' (DbType = Guid), @p31='?' (DbType = Guid), @p28='?' (DbType = Boolean), @p29='?' (DbType = Guid), @p30='?' (DbType = Guid), @p35='?' (DbType = Guid), @p32='?' (DbType = Boolean), @p33='?' (DbType = Guid), @p34='?' (DbType = Guid), @p39='?' (DbType = Guid), @p36='?' (DbType = Boolean), @p37='?' (DbType = Guid), @p38='?' (DbType = Guid), @p43='?' (DbType = Guid), @p40='?' (DbType = Boolean), @p41='?' (DbType = Guid), @p42='?' (DbType = Guid), @p47='?' (DbType = Guid), @p44='?' (DbType = Boolean), @p45='?' (DbType = Guid), @p46='?' (DbType = Guid), @p51='?' (DbType = Guid), @p48='?' (DbType = Boolean), @p49='?' (DbType = Guid), @p50='?' (DbType = Guid), @p55='?' (DbType = Guid), @p52='?' (DbType = Boolean), @p53='?' (DbType = Guid), @p54='?' (DbType = Guid), @p59='?' (DbType = Guid), @p56='?' (DbType = Boolean), @p57='?' (DbType = Guid), @p58='?' (DbType = Guid), @p63='?' (DbType = Guid), @p60='?' (DbType = Boolean), @p61='?' (DbType = Guid), @p62='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      UPDATE "RolePermissions" SET "IsAllowed" = @p0, "PermissionId" = @p1, "RoleId" = @p2
+      WHERE "Id" = @p3;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p4, "PermissionId" = @p5, "RoleId" = @p6
+      WHERE "Id" = @p7;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p8, "PermissionId" = @p9, "RoleId" = @p10
+      WHERE "Id" = @p11;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p12, "PermissionId" = @p13, "RoleId" = @p14
+      WHERE "Id" = @p15;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p16, "PermissionId" = @p17, "RoleId" = @p18
+      WHERE "Id" = @p19;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p20, "PermissionId" = @p21, "RoleId" = @p22
+      WHERE "Id" = @p23;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p24, "PermissionId" = @p25, "RoleId" = @p26
+      WHERE "Id" = @p27;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p28, "PermissionId" = @p29, "RoleId" = @p30
+      WHERE "Id" = @p31;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p32, "PermissionId" = @p33, "RoleId" = @p34
+      WHERE "Id" = @p35;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p36, "PermissionId" = @p37, "RoleId" = @p38
+      WHERE "Id" = @p39;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p40, "PermissionId" = @p41, "RoleId" = @p42
+      WHERE "Id" = @p43;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p44, "PermissionId" = @p45, "RoleId" = @p46
+      WHERE "Id" = @p47;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p48, "PermissionId" = @p49, "RoleId" = @p50
+      WHERE "Id" = @p51;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p52, "PermissionId" = @p53, "RoleId" = @p54
+      WHERE "Id" = @p55;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p56, "PermissionId" = @p57, "RoleId" = @p58
+      WHERE "Id" = @p59;
+      UPDATE "RolePermissions" SET "IsAllowed" = @p60, "PermissionId" = @p61, "RoleId" = @p62
+      WHERE "Id" = @p63;
+warn: Betterfit.Services.Roles.GymRoleBootstrapper[0]
+      Encountered a concurrency issue while backfilling default role permissions. A subsequent startup can retry safely.
+      Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.ThrowAggregateUpdateConcurrencyExceptionAsync(RelationalDataReader reader, Int32 commandIndex, Int32 expectedRowsAffected, Int32 rowsAffected, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Betterfit.Services.Roles.GymRoleBootstrapper.EnsureDefaultRoleTemplatePermissionsAsync(CancellationToken cancellationToken) in C:\Users\mfarh\OneDrive\Desktop\proggGymbro\gymbro\backend\Betterfit\Services\Roles\GymRoleBootstrapper.cs:line 130
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5306
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\mfarh\OneDrive\Desktop\proggGymbro\gymbro\backend\Betterfit
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@normalizedEmail='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName"
+      FROM "AspNetUsers" AS a
+      WHERE a."NormalizedEmail" = @normalizedEmail
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          INNER JOIN "GymAuthenticationPolicies" AS g ON t."GymId" = g."GymId"
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND g."RequireTwoFactorForStaff")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          INNER JOIN "GymAuthenticationPolicies" AS g0 ON g."GymId" = g0."GymId"
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended') AND g0."RequireTwoFactorForMembers")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", COALESCE(a."Email", '') AS "Email", a."FullName"
+      FROM "AspNetUsers" AS a
+      WHERE a."Id" = @userId
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended'))
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@userId='?', @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@authorizedGymIds='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."CreatedAtUtc", g."Name"
+      FROM "Gyms" AS g
+      WHERE g."Id" = ANY (@authorizedGymIds)
+      ORDER BY g."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "Gyms" AS g
+          WHERE g."Id" = @gymId)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."AddressLine1", g."City", g."Code", g."CountryCode", g."CreatedAtUtc", g."GymId", g."IsActive", g."Name"
+      FROM "GymLocations" AS g
+      WHERE g."GymId" = @gymId AND g."IsActive"
+      ORDER BY g."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."ClaimedAtUtc", g."CreatedAtUtc", g."EndedAtUtc", g."GymId", g."InvitationEmail", g."JoinedAtUtc", g."MemberProfileId", g."Notes", g."PendingDateOfBirth", g."PendingEmergencyContactName", g."PendingEmergencyContactPhoneNumber", g."PendingFirstName", g."PendingLastName", g."PendingPhoneNumber", g."PrimaryLocationId", g."Source", g."Status", g."TaxCode", g."UpdatedAtUtc", g."UserId", a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName", m."Id", m."AvatarUrl", m."BirthDate", m."CreatedAtUtc", m."EmergencyContactName", m."EmergencyContactPhoneNumber", m."FirstName", m."LastName", m."UpdatedAtUtc", m."UserId", s."Id", s."AssignedAtUtc", s."GymMembershipId", s."LocationId", s."Id0", s."AddressLine1", s."City", s."Code", s."CountryCode", s."CreatedAtUtc", s."GymId", s."IsActive", s."Name"
+      FROM "GymMemberships" AS g
+      LEFT JOIN "AspNetUsers" AS a ON g."UserId" = a."Id"
+      LEFT JOIN "MemberProfiles" AS m ON g."MemberProfileId" = m."Id"
+      LEFT JOIN (
+          SELECT g0."Id", g0."AssignedAtUtc", g0."GymMembershipId", g0."LocationId", g1."Id" AS "Id0", g1."AddressLine1", g1."City", g1."Code", g1."CountryCode", g1."CreatedAtUtc", g1."GymId", g1."IsActive", g1."Name"
+          FROM "GymMembershipLocations" AS g0
+          INNER JOIN "GymLocations" AS g1 ON g0."LocationId" = g1."Id"
+      ) AS s ON g."Id" = s."GymMembershipId"
+      WHERE g."GymId" = @gymId
+      ORDER BY g."Id", a."Id", m."Id", s."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."CreatedAtUtc", g."CreatedByUserId", g."DiscountAmount", g."GymId", g."GymMembershipId", g."LocationId", g."Notes", g."PaidAmount", g."PaymentStatus", g."ReferenceCode", g."RemainingAmount", g."SoldAtUtc", g."Status", g."SubtotalAmount", g."TotalAmount", g."UpdatedAtUtc", g0."Id", g0."AddressLine1", g0."City", g0."Code", g0."CountryCode", g0."CreatedAtUtc", g0."GymId", g0."IsActive", g0."Name", g1."Id", g1."ClaimedAtUtc", g1."CreatedAtUtc", g1."EndedAtUtc", g1."GymId", g1."InvitationEmail", g1."JoinedAtUtc", g1."MemberProfileId", g1."Notes", g1."PendingDateOfBirth", g1."PendingEmergencyContactName", g1."PendingEmergencyContactPhoneNumber", g1."PendingFirstName", g1."PendingLastName", g1."PendingPhoneNumber", g1."PrimaryLocationId", g1."Source", g1."Status", g1."TaxCode", g1."UpdatedAtUtc", g1."UserId", a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName", m."Id", m."AvatarUrl", m."BirthDate", m."CreatedAtUtc", m."EmergencyContactName", m."EmergencyContactPhoneNumber", m."FirstName", m."LastName", m."UpdatedAtUtc", m."UserId"
+      FROM "GymSales" AS g
+      INNER JOIN "GymLocations" AS g0 ON g."LocationId" = g0."Id"
+      INNER JOIN "GymMemberships" AS g1 ON g."GymMembershipId" = g1."Id"
+      LEFT JOIN "AspNetUsers" AS a ON g1."UserId" = a."Id"
+      LEFT JOIN "MemberProfiles" AS m ON g1."MemberProfileId" = m."Id"
+      WHERE g."GymId" = @gymId
+      ORDER BY g."SoldAtUtc" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@normalizedEmail='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName"
+      FROM "AspNetUsers" AS a
+      WHERE a."NormalizedEmail" = @normalizedEmail
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          INNER JOIN "GymAuthenticationPolicies" AS g ON t."GymId" = g."GymId"
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND g."RequireTwoFactorForStaff")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          INNER JOIN "GymAuthenticationPolicies" AS g0 ON g."GymId" = g0."GymId"
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended') AND g0."RequireTwoFactorForMembers")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", COALESCE(a."Email", '') AS "Email", a."FullName"
+      FROM "AspNetUsers" AS a
+      WHERE a."Id" = @userId
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended'))
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@userId='?', @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@authorizedGymIds='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."CreatedAtUtc", g."Name"
+      FROM "Gyms" AS g
+      WHERE g."Id" = ANY (@authorizedGymIds)
+      ORDER BY g."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@normalizedEmail='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName"
+      FROM "AspNetUsers" AS a
+      WHERE a."NormalizedEmail" = @normalizedEmail
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          INNER JOIN "GymAuthenticationPolicies" AS g ON t."GymId" = g."GymId"
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND g."RequireTwoFactorForStaff")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          INNER JOIN "GymAuthenticationPolicies" AS g0 ON g."GymId" = g0."GymId"
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended') AND g0."RequireTwoFactorForMembers")
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT a."Id", COALESCE(a."Email", '') AS "Email", a."FullName"
+      FROM "AspNetUsers" AS a
+      WHERE a."Id" = @userId
+      LIMIT 2
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "GymMemberships" AS g
+          WHERE g."UserId" = @userId AND g."Status" IN ('Active', 'Suspended'))
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?'], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "TenantRoleAssignments" AS t
+          WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "Gyms" AS g
+          WHERE g."Id" = @gymId)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."AddressLine1", g."City", g."Code", g."CountryCode", g."CreatedAtUtc", g."GymId", g."IsActive", g."Name"
+      FROM "GymLocations" AS g
+      WHERE g."GymId" = @gymId AND g."IsActive"
+      ORDER BY g."Name"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?', @gymId_Value='?' (DbType = Guid), @normalizedResource='?', @normalizedAction='?'], CommandType='Text', CommandTimeout='30']
+      SELECT t."GymId", t."ScopeType", t."ScopeLocationId", r."IsAllowed"
+      FROM "TenantRoleAssignments" AS t
+      INNER JOIN "RolePermissions" AS r ON t."RoleId" = r."RoleId"
+      INNER JOIN "PermissionCatalogItems" AS p ON r."PermissionId" = p."Id"
+      WHERE t."UserId" = @userId AND t."Status" = 'Active' AND t."RevokedAtUtc" IS NULL AND t."GymId" = @gymId_Value AND p."NormalizedResource" = @normalizedResource AND p."NormalizedAction" = @normalizedAction
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."ClaimedAtUtc", g."CreatedAtUtc", g."EndedAtUtc", g."GymId", g."InvitationEmail", g."JoinedAtUtc", g."MemberProfileId", g."Notes", g."PendingDateOfBirth", g."PendingEmergencyContactName", g."PendingEmergencyContactPhoneNumber", g."PendingFirstName", g."PendingLastName", g."PendingPhoneNumber", g."PrimaryLocationId", g."Source", g."Status", g."TaxCode", g."UpdatedAtUtc", g."UserId", a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName", m."Id", m."AvatarUrl", m."BirthDate", m."CreatedAtUtc", m."EmergencyContactName", m."EmergencyContactPhoneNumber", m."FirstName", m."LastName", m."UpdatedAtUtc", m."UserId", s."Id", s."AssignedAtUtc", s."GymMembershipId", s."LocationId", s."Id0", s."AddressLine1", s."City", s."Code", s."CountryCode", s."CreatedAtUtc", s."GymId", s."IsActive", s."Name"
+      FROM "GymMemberships" AS g
+      LEFT JOIN "AspNetUsers" AS a ON g."UserId" = a."Id"
+      LEFT JOIN "MemberProfiles" AS m ON g."MemberProfileId" = m."Id"
+      LEFT JOIN (
+          SELECT g0."Id", g0."AssignedAtUtc", g0."GymMembershipId", g0."LocationId", g1."Id" AS "Id0", g1."AddressLine1", g1."City", g1."Code", g1."CountryCode", g1."CreatedAtUtc", g1."GymId", g1."IsActive", g1."Name"
+          FROM "GymMembershipLocations" AS g0
+          INNER JOIN "GymLocations" AS g1 ON g0."LocationId" = g1."Id"
+      ) AS s ON g."Id" = s."GymMembershipId"
+      WHERE g."GymId" = @gymId
+      ORDER BY g."Id", a."Id", m."Id", s."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@gymId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."CreatedAtUtc", g."CreatedByUserId", g."DiscountAmount", g."GymId", g."GymMembershipId", g."LocationId", g."Notes", g."PaidAmount", g."PaymentStatus", g."ReferenceCode", g."RemainingAmount", g."SoldAtUtc", g."Status", g."SubtotalAmount", g."TotalAmount", g."UpdatedAtUtc", g0."Id", g0."AddressLine1", g0."City", g0."Code", g0."CountryCode", g0."CreatedAtUtc", g0."GymId", g0."IsActive", g0."Name", g1."Id", g1."ClaimedAtUtc", g1."CreatedAtUtc", g1."EndedAtUtc", g1."GymId", g1."InvitationEmail", g1."JoinedAtUtc", g1."MemberProfileId", g1."Notes", g1."PendingDateOfBirth", g1."PendingEmergencyContactName", g1."PendingEmergencyContactPhoneNumber", g1."PendingFirstName", g1."PendingLastName", g1."PendingPhoneNumber", g1."PrimaryLocationId", g1."Source", g1."Status", g1."TaxCode", g1."UpdatedAtUtc", g1."UserId", a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName", m."Id", m."AvatarUrl", m."BirthDate", m."CreatedAtUtc", m."EmergencyContactName", m."EmergencyContactPhoneNumber", m."FirstName", m."LastName", m."UpdatedAtUtc", m."UserId"
+      FROM "GymSales" AS g
+      INNER JOIN "GymLocations" AS g0 ON g."LocationId" = g0."Id"
+      INNER JOIN "GymMemberships" AS g1 ON g."GymMembershipId" = g1."Id"
+      LEFT JOIN "AspNetUsers" AS a ON g1."UserId" = a."Id"
+      LEFT JOIN "MemberProfiles" AS m ON g1."MemberProfileId" = m."Id"
+      WHERE g."GymId" = @gymId
+      ORDER BY g."SoldAtUtc" DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (12ms) [Parameters=[@gymId='?' (DbType = Guid), @AddDays='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+      SELECT g."Id", g."GateName", g."GymId", g."GymMembershipId", g."LocationId", g."OccurredAtUtc", g."Origin", g."PerformedByUserId", g."Reason", g."Result", g0."Id", g0."AddressLine1", g0."City", g0."Code", g0."CountryCode", g0."CreatedAtUtc", g0."GymId", g0."IsActive", g0."Name", g1."Id", g1."ClaimedAtUtc", g1."CreatedAtUtc", g1."EndedAtUtc", g1."GymId", g1."InvitationEmail", g1."JoinedAtUtc", g1."MemberProfileId", g1."Notes", g1."PendingDateOfBirth", g1."PendingEmergencyContactName", g1."PendingEmergencyContactPhoneNumber", g1."PendingFirstName", g1."PendingLastName", g1."PendingPhoneNumber", g1."PrimaryLocationId", g1."Source", g1."Status", g1."TaxCode", g1."UpdatedAtUtc", g1."UserId", a."Id", a."AccessFailedCount", a."ConcurrencyStamp", a."Email", a."EmailConfirmed", a."FullName", a."LockoutEnabled", a."LockoutEnd", a."NormalizedEmail", a."NormalizedUserName", a."PasswordHash", a."PhoneNumber", a."PhoneNumberConfirmed", a."SecurityStamp", a."TwoFactorEnabled", a."UserName", m."Id", m."AvatarUrl", m."BirthDate", m."CreatedAtUtc", m."EmergencyContactName", m."EmergencyContactPhoneNumber", m."FirstName", m."LastName", m."UpdatedAtUtc", m."UserId"
+      FROM "GymAccessEvents" AS g
+      INNER JOIN "GymLocations" AS g0 ON g."LocationId" = g0."Id"
+      INNER JOIN "GymMemberships" AS g1 ON g."GymMembershipId" = g1."Id"
+      LEFT JOIN "AspNetUsers" AS a ON g1."UserId" = a."Id"
+      LEFT JOIN "MemberProfiles" AS m ON g1."MemberProfileId" = m."Id"
+      WHERE g."GymId" = @gymId AND g."OccurredAtUtc" >= @AddDays
+      ORDER BY g."OccurredAtUtc" DESC

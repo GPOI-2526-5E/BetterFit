@@ -8,12 +8,35 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { SidebarTrigger } from '$lib/components/ui/sidebar/index.js';
 	import * as m from '$lib/paraglide/messages.js';
+	import { useCenterSelectionStore } from '$lib/stores/CenterSelectionStoreProvider.svelte';
+	import { useUserAuthenticationStore } from '$lib/stores/AuthenticationStoreProvider.svelte';
+	import { onMount } from 'svelte';
 
-	const user = {
-		name: 'Antonio Petricciuoli',
-		email: 'antonio@betterfit.app',
-		avatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Antonio%20Petricciuoli'
-	};
+	const center = useCenterSelectionStore();
+	const auth = useUserAuthenticationStore();
+	const hasNoTenants = $derived(
+		!center.isLoadingGyms && !center.gymsError && center.gyms.length === 0
+	);
+	const disableOperationalActions = $derived(!center.selectedGym);
+	const user = $derived.by(() => {
+		const profile = auth.user?.account?.user;
+		const email = profile?.email?.trim() || auth.user?.user || 'account@betterfit.local';
+		const fallbackName =
+			email.split('@')[0]?.replace(/[._-]+/g, ' ').trim() || 'Betterfit account';
+		const fullName = profile?.fullName?.trim() || fallbackName;
+
+		return {
+			name: fullName,
+			email,
+			avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(fullName)}`
+		};
+	});
+
+	onMount(() => {
+		if (auth.user && !auth.user.account?.user) {
+			void auth.refreshCurrentUser();
+		}
+	});
 </script>
 
 <header
@@ -23,8 +46,19 @@
 		<div class="flex min-w-[280px] flex-1 items-center gap-3">
 			<SidebarTrigger class="md:hidden" />
 			<h1 class="text-lg font-semibold tracking-tight">BetterFit</h1>
-			<!--<Badge variant="secondary" class="hidden lg:inline-flex">{center.selected.name}</Badge>
-		<div class="relative hidden w-full max-w-xl md:block">
+			<div class="hidden flex-wrap items-center gap-2 lg:flex">
+				<Badge variant="secondary">
+					{center.selectedGym?.name ??
+						(hasNoTenants
+							? m.center_switcher_no_tenants_short()
+							: m.center_switcher_loading_tenants())}
+				</Badge>
+				<Badge variant="outline">
+					{center.selectedLocation?.name ??
+						(hasNoTenants ? m.center_switcher_pending_scope() : m.center_switcher_all_locations())}
+				</Badge>
+			</div>
+			<!--<div class="relative hidden w-full max-w-xl md:block">
 				<SearchIcon
 					class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 				/>
@@ -32,10 +66,21 @@
 			</div> KEEP COMMENTED FOR FUTURE USE -->
 		</div>
 		<div class="flex items-center gap-2">
-			<Button variant="outline" size="sm" class="hidden md:inline-flex"
-				>{m.button_unlock_turnstile()}</Button
+			<Button
+				variant="outline"
+				size="sm"
+				class="hidden md:inline-flex"
+				disabled={disableOperationalActions}
+				aria-disabled={disableOperationalActions || undefined}>{m.button_unlock_turnstile()}</Button
 			>
-			<Button size="sm" class="hidden md:inline-flex">{m.button_new_sale()}</Button>
+			<Button
+				size="sm"
+				class="hidden md:inline-flex"
+				disabled={disableOperationalActions}
+				aria-disabled={disableOperationalActions || undefined}
+			>
+				{m.button_new_sale()}
+			</Button>
 			<LanguageSwitcher />
 			<Button
 				variant="ghost"

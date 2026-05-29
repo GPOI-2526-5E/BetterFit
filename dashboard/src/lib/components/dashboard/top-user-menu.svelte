@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { useUserAuthenticationStore } from '$lib/stores/AuthenticationStoreProvider.svelte';
 	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
 	import BellIcon from '@lucide/svelte/icons/bell';
 	import CreditCardIcon from '@lucide/svelte/icons/credit-card';
@@ -14,6 +16,7 @@
 		user: { name: string; email: string; avatar: string };
 	} = $props();
 
+	const auth = useUserAuthenticationStore();
 	const initials = $derived(
 		user.name
 			.split(' ')
@@ -22,6 +25,11 @@
 			.slice(0, 2)
 			.toUpperCase()
 	);
+
+	async function handleLogout() {
+		auth.logout();
+		await goto('/login', { replaceState: true });
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -76,7 +84,7 @@
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>
+		<DropdownMenu.Item onclick={handleLogout}>
 			<LogOutIcon />
 			{m.user_logout()}
 		</DropdownMenu.Item>

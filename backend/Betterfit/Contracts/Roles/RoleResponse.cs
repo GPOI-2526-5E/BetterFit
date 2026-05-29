@@ -23,11 +23,11 @@ public sealed record RoleResponse(
 /// <param name="PermissionId">Catalog permission identifier.</param>
 /// <param name="Resource">Target resource name.</param>
 /// <param name="Action">Action name for the resource.</param>
-/// <param name="Description">Optional permission description from the catalog.</param>
+/// <param name="DescriptionKey">Stable localization key from the permission catalog.</param>
 /// <param name="IsAllowed">True to allow action, false to deny action.</param>
 public sealed record PermissionResponse(
     Guid PermissionId,
     string Resource,
     string Action,
-    string? Description,
+    string? DescriptionKey,
     bool IsAllowed);

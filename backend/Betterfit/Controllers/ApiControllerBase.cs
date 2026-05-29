@@ -27,10 +27,12 @@ public abstract class ApiControllerBase : ControllerBase
         return BadRequest(ApiResponseFactory.Failure<T>(code, message, HttpContext, details));
     }
 
-    protected ActionResult<ApiResponse<T>> UnauthorizedError<T>(string message = "Authentication is required.")
+    protected ActionResult<ApiResponse<T>> UnauthorizedError<T>(
+        string message = "Authentication is required.",
+        string code = "unauthorized")
     {
         return StatusCode(StatusCodes.Status401Unauthorized,
-            ApiResponseFactory.Failure<T>("unauthorized", message, HttpContext));
+            ApiResponseFactory.Failure<T>(code, message, HttpContext));
     }
 
     protected ActionResult<ApiResponse<T>> ForbiddenError<T>(string message = "Access to this resource is forbidden.")
@@ -39,9 +41,11 @@ public abstract class ApiControllerBase : ControllerBase
             ApiResponseFactory.Failure<T>("forbidden", message, HttpContext));
     }
 
-    protected ActionResult<ApiResponse<T>> NotFoundError<T>(string message = "Resource not found.")
+    protected ActionResult<ApiResponse<T>> NotFoundError<T>(
+        string message = "Resource not found.",
+        string code = "not_found")
     {
-        return NotFound(ApiResponseFactory.Failure<T>("not_found", message, HttpContext));
+        return NotFound(ApiResponseFactory.Failure<T>(code, message, HttpContext));
     }
 
     protected ActionResult<ApiResponse<T>> ConflictError<T>(

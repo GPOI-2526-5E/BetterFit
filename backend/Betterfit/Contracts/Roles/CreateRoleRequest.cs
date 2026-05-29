@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-
 namespace Betterfit.Contracts.Roles;
 
 /// <summary>
 /// Request payload used to create a custom role in a specific gym.
 /// </summary>
-public class CreateRoleRequest
+public sealed class CreateRoleRequest
 {
     /// <summary>
     /// Role name. Must be unique within the gym.

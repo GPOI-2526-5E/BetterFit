@@ -40,7 +40,7 @@ public class PermissionsController : ApiControllerBase
                 permission.Id,
                 permission.Resource,
                 permission.Action,
-                permission.Description))
+                permission.DescriptionKey))
             .ToListAsync(cancellationToken);
 
         return Success<IReadOnlyCollection<PermissionCatalogItemResponse>>(

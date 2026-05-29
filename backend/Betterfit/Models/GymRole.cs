@@ -18,7 +18,7 @@ public class GymRole
     public Guid GymId { get; set; }
 
     /// <summary>
-    /// Display name of the role (for example, Owner, Trainer, Front Desk).
+    /// Display name of the role (for example, Owner, Coach, Reception).
     /// </summary>
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
@@ -63,5 +63,5 @@ public class GymRole
     /// <summary>
     /// Gym memberships currently using this role.
     /// </summary>
-    public ICollection<GymMembership> GymMemberships { get; set; } = new List<GymMembership>();
+    public ICollection<TenantRoleAssignment> StaffAssignments { get; set; } = new List<TenantRoleAssignment>();
 }

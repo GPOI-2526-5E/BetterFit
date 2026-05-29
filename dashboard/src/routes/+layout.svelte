@@ -8,6 +8,8 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import CenterSelectionStoreProvider from '$lib/stores/CenterSelectionStoreProvider.svelte';
+	import AuthenticationStoreProvider from '$lib/stores/AuthenticationStoreProvider.svelte';
+	import ApiClientProvider from '$lib/stores/ApiClientProvider.svelte';
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -23,17 +25,13 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-
-<QueryClientProvider client={queryClient}>
-	<CenterSelectionStoreProvider>
-		<SidebarProvider>
-			<AppSidebar />
-			<SidebarInset class="md:rounded-[20px]">
-				{@render children()}
-			</SidebarInset>
-		</SidebarProvider>
-	</CenterSelectionStoreProvider>
-</QueryClientProvider>
+<ApiClientProvider>
+	<AuthenticationStoreProvider>
+		<QueryClientProvider client={queryClient}>
+			{@render children()}
+		</QueryClientProvider>
+	</AuthenticationStoreProvider>
+</ApiClientProvider>
 <div style="display:none">
 	{#each locales as locale}
 		<a href={localizeHref(page.url.pathname, { locale })}>

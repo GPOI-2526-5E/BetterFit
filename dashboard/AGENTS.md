@@ -23,7 +23,13 @@ Generates a Svelte Playground link with the provided code.
 After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
 
 # Shadcn Documentation:
+
 The dashboard project uses the Shadcn UI library. llm-optimized documentation is available on `https://www.shadcn-svelte.com/llms.txt`. Always refer to this documentation when working with UI components in the dashboard.
 
+# OpenAPI client sync:
+
+If the backend API structure changes in a way that affects frontend request/response contracts, run `pnpm openapi` from `dashboard/` to regenerate `src/lib/api` before finishing the task.
+
 # Website stack/brand guidelines:
+
 Check `docs/initialization.md` for the website stack and brand guidelines. Always adhere to these guidelines when writing code or documentation.

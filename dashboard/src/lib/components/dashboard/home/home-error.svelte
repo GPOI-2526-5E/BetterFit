@@ -9,7 +9,13 @@
 		CardTitle
 	} from '$lib/components/ui/card/index.js';
 
-	let { onRetry }: { onRetry: () => void } = $props();
+	let {
+		onRetry,
+		message = null
+	}: {
+		onRetry: () => void;
+		message?: string | null;
+	} = $props();
 </script>
 
 <Card class="border-destructive/30">
@@ -18,6 +24,9 @@
 		<CardDescription>{m.home_error_desc()}</CardDescription>
 	</CardHeader>
 	<CardContent>
+		{#if message}
+			<p class="mb-4 text-sm text-muted-foreground">{message}</p>
+		{/if}
 		<Button onclick={onRetry}>{m.common_retry()}</Button>
 	</CardContent>
 </Card>

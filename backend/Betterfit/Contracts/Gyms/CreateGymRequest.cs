@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 namespace Betterfit.Contracts.Gyms;
 
 /// <summary>
-/// Request payload used to create a gym.
+/// Request payload used to create a tenant gym.
 /// </summary>
-public class CreateGymRequest
+public sealed class CreateGymRequest
 {
     /// <summary>
-    /// Gym name.
+    /// Tenant display name.
     /// </summary>
     [Required]
     [MaxLength(150)]

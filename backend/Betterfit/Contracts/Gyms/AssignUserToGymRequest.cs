@@ -1,25 +1,33 @@
 using System.ComponentModel.DataAnnotations;
+using Betterfit.Models;
 
 namespace Betterfit.Contracts.Gyms;
 
 /// <summary>
-/// Request payload to assign a user to a gym with a specific role.
+/// Request payload to create or update a member relationship within a gym.
 /// </summary>
-public class AssignUserToGymRequest
+public sealed class AssignUserToGymRequest
 {
-    /// <summary>
-    /// Target user identifier. Optional when <see cref="Email"/> is provided.
-    /// </summary>
     public string? UserId { get; init; }
 
-    /// <summary>
-    /// Target user email. Optional when <see cref="UserId"/> is provided.
-    /// </summary>
     [EmailAddress]
     public string? Email { get; init; }
 
-    /// <summary>
-    /// Role identifier to assign in the gym.
-    /// </summary>
-    public Guid RoleId { get; init; }
+    public List<Guid> LocationIds { get; init; } = [];
+
+    public Guid? PrimaryLocationId { get; init; }
+
+    public GymMembershipStatus? Status { get; init; }
+
+    public GymMembershipSource? Source { get; init; }
+
+    [MaxLength(32)]
+    public string? TaxCode { get; init; }
+
+    [MaxLength(1000)]
+    public string? Notes { get; init; }
+
+    public MemberProfileRequest? Profile { get; init; }
+
+    public List<GymCustomFieldValueInput> CustomFields { get; init; } = [];
 }

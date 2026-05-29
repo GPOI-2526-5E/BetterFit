@@ -1,29 +1,29 @@
 # Betterfit API
 
-Betterfit is a CRM platform for gyms. This scaffold provides:
-- JWT authentication (`register`/`login`)
-- PostgreSQL persistence via Entity Framework Core
-- Gym creation and user-to-gym assignment
-- Role management scoped per gym
-- Dedicated permission catalog table with FK-based role permissions
-- Runtime permission enforcement on protected gym endpoints
-- Unified API response envelope for both success and errors
-
-## OpenAPI support
-
-OpenAPI is integrated and exposed at:
-- JSON spec: `http://localhost:5299/openapi/v1.json` (local `dotnet run` default)
-- JSON spec: `http://localhost:8080/openapi/v1.json` (docker compose)
-
-Protected endpoints require a JWT bearer token at runtime (`Authorization: Bearer <token>`).
+Betterfit is a multi-tenant CRM platform for gyms and sports clubs. The backend now models:
+- one global Betterfit account per person;
+- one optional global `member_profile`;
+- one optional global `staff_profile`;
+- tenant-scoped `gym_membership` records for client relationships;
+- separate `tenant_role_assignment` records for staff permissions;
+- many physical locations per tenant;
+- secure invitation-based membership claiming.
 
 ## Tech stack
 
 - ASP.NET Core Web API (.NET 10)
 - ASP.NET Core Identity (custom `ApplicationUser`)
-- Entity Framework Core (code-first model)
-- PostgreSQL (`Npgsql.EntityFrameworkCore.PostgreSQL`)
-- OpenAPI (`Microsoft.AspNetCore.OpenApi`)
+- Entity Framework Core with PostgreSQL
+- JWT bearer authentication
+- OpenAPI + Swagger
+
+## OpenAPI support
+
+OpenAPI is exposed at:
+- `http://localhost:5299/openapi/v1.json` for local `dotnet run`
+- `http://localhost:8080/openapi/v1.json` for Docker Compose
+
+Protected endpoints require `Authorization: Bearer <token>`.
 
 ## Quick start
 
@@ -49,111 +49,158 @@ Main settings live in:
 - `Betterfit/appsettings.json`
 - `Betterfit/appsettings.Development.json`
 
+`appsettings.json` is intentionally non-runnable by default. Supply production settings through environment-specific configuration or a secret store, and use local development settings only in development.
+
 Keys:
 - `ConnectionStrings:DefaultConnection`
 - `Jwt:Issuer`
 - `Jwt:Audience`
 - `Jwt:Key`
 - `Jwt:ExpiresMinutes`
+- `AuthenticationFlow:*`
 
 ## Domain model
 
-- `ApplicationUser`: Identity user with optional `FullName`
-- `Gym`: gym entity
-- `GymRole`: role owned by a specific gym (`GymId`)
-- `PermissionCatalogItem`: central catalog of valid permissions (`resource`, `action`)
-- `RolePermission`: assignment from `GymRole` to `PermissionCatalogItem` with `IsAllowed`
-- `GymMembership`: assignment of user to gym and role
+- `ApplicationUser`: global Betterfit account used for authentication
+- `AuthenticationChallenge`: pre-auth session for email verification or 2FA completion
+- `MemberProfile`: customer-side identity profile attached to the account
+- `StaffProfile`: operator-side identity profile attached to the account
+- `Gym`: tenant organization
+- `GymAuthenticationPolicy`: tenant-local 2FA requirements
+- `GymLocation`: physical place under a tenant
+- `GymMembership`: tenant-scoped customer relationship
+- `TenantRoleAssignment`: staff permissions inside a tenant or a specific location
+- `GymRole`: reusable staff role definition per tenant
+- `PermissionCatalogItem` + `RolePermission`: permission catalog and role rules
+- `GymInvitation`: secure token-based claim invitation for memberships
 
-## Role and permission behavior
+## Architectural rules
 
-- Roles are scoped per gym.
-- Role names are unique within a gym.
-- Permissions are not free-form strings in role assignments.
-- Role permissions reference a dedicated permission catalog via `PermissionId`.
-- Permissions are enforced at runtime via authorization policies.
-- Explicit deny wins over allow when evaluating the same permission in a gym.
-- Single-owner invariant is enforced:
-  - a gym cannot exist without an owner
-  - a gym cannot have more than one owner
-  - assigning Owner to another user transfers ownership atomically
-- When a gym is created, default roles are auto-seeded for that gym:
-  - Owner
-  - Manager
-  - Trainer
-  - Member
-- The creator of a gym is automatically assigned as Owner in that gym.
+- Authentication lives on the global account.
+- Member concerns and staff concerns are modeled separately.
+- A person can be:
+  - only member
+  - only staff
+  - both member and staff
+- Client relationship is represented by `GymMembership`.
+- Staff permissions are represented by `TenantRoleAssignment`.
+- Locations are tenant children and can scope both memberships and staff work.
+- No `is_staff` / `is_admin` / `hybrid` flags are required in the core model.
 
-## API endpoints
+## Default staff roles
+
+When a tenant is created, these roles are seeded:
+- `Owner`
+- `Manager`
+- `Reception`
+- `Coach`
+- `Support Operator`
+
+The creator of the gym becomes the initial tenant `Owner` through a staff assignment, not through a member role.
+
+## Privacy-oriented modeling choices
+
+- Betterfit authentication stays global at `ApplicationUser` level.
+- Member/staff profiles stay separate from tenant permissions and subscriptions.
+- Tenant-sensitive data such as tax code, operational notes, subscriptions, contracts, payments, and certificates belong to the membership or its child entities, not to the base account.
+- Invitation claiming is explicit and token-based.
+
+## Main endpoints
 
 ### Auth
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- `POST /api/auth/verification-session/status`
+- `POST /api/auth/verify-email-code`
+- `POST /api/auth/resend-email-code`
+- `POST /api/auth/2fa/setup`
+- `POST /api/auth/2fa/enable`
+- `POST /api/auth/2fa/verify`
+- `POST /api/auth/2fa/recovery-code`
+- `GET /api/auth/me`
+- `POST /api/auth/claim-invitation`
 
-Both return:
-- JWT token
-- expiration timestamp
-- user summary
+Register and login now return an auth flow response instead of always returning a JWT immediately.
 
-### Permission catalog (per gym)
+Auth flow rules:
+- email verification is mandatory before a real API JWT is issued;
+- register and unverified login return a `verificationToken`, `sessionExpiresAtUtc`, `codeExpiresAtUtc`, and `resendAvailableAtUtc`;
+- the verification session is intentionally longer-lived than the email code so browser clients can resume after refresh or reopen;
+- the verification token is body-bound and only valid for verification endpoints;
+- clients can rehydrate a stored verification token with `POST /api/auth/verification-session/status`;
+- once the email is confirmed, the backend evaluates whether 2FA is required;
+- 2FA is required if the account has it enabled, or if any active tenant policy requires it for the user's active memberships or staff assignments.
+
+Detailed auth/client integration guidance lives in `docs/betterfit-autenticazione.md`.
+
+Development note:
+- in development, email verification codes are logged by the backend instead of being sent through a real provider;
+- production should replace the default sender with a real delivery implementation.
+
+`GET /api/auth/me` is intentionally a lightweight session/bootstrap endpoint. It should not return full member or staff profile data, tenant-local operational data, or audit timestamps.
+
+### Gyms and locations
+
+- `GET /api/gyms`
+- `GET /api/gyms/{gymId}`
+- `POST /api/gyms`
+- `GET /api/gyms/{gymId}/locations`
+- `POST /api/gyms/{gymId}/locations`
+
+`POST /api/gyms` creates the tenant only. Physical places are managed separately through the locations endpoints.
+
+`GET /api/gyms` and `GET /api/gyms/{gymId}` return tenant summaries, not embedded location collections. Clients should fetch locations explicitly when needed.
+
+### Tenant security policy
+
+- `GET /api/gyms/{gymId}/security/authentication-policy`
+- `PUT /api/gyms/{gymId}/security/authentication-policy`
+
+Tenant authentication policy currently supports:
+- `requireTwoFactorForStaff`
+- `requireTwoFactorForMembers`
+
+### Memberships
+
+- `GET /api/gyms/{gymId}/memberships`
+- `POST /api/gyms/{gymId}/memberships`
+- `POST /api/gyms/{gymId}/memberships/{membershipId}/invitations`
+
+Membership creation supports:
+- existing registered users via `userId` or `email`
+- pending-claim members via `email`
+- multi-location access via `locationIds`
+- member profile creation/update when an account exists
+- invitation-based onboarding when an account does not exist yet
+
+### Staff assignments
+
+- `GET /api/gyms/{gymId}/staff-assignments`
+- `POST /api/gyms/{gymId}/staff-assignments`
+- `POST /api/gyms/{gymId}/assignments`
+
+Staff assignments support:
+- tenant-scoped roles
+- location-scoped roles
+- owner transfer through dedicated staff assignments
+- optional global staff profile enrichment
+- database-backed scope integrity for tenant vs location assignments
+
+### Roles and permissions
 
 - `GET /api/gyms/{gymId}/permissions/catalog`
+- `GET /api/gyms/{gymId}/roles`
+- `GET /api/gyms/{gymId}/roles/{roleId}`
+- `POST /api/gyms/{gymId}/roles`
 
-Requires `roles:read` in that gym.
-Use this endpoint to retrieve valid permission IDs for role creation.
+Roles are now staff roles only.
 
-### Roles (per gym)
+## Schema evolution
 
-- `GET /api/gyms/{gymId}/roles` (requires `roles:read`)
-- `GET /api/gyms/{gymId}/roles/{roleId}` (requires `roles:read`)
-- `POST /api/gyms/{gymId}/roles` (requires `roles:write`)
+The app applies EF Core migrations at startup through `Database.MigrateAsync()`.
 
-Create custom role payload example:
-
-```json
-{
-  "name": "Front Desk",
-  "description": "Handles check-ins and member support",
-  "permissions": [
-    { "permissionId": "32291f01-7fe4-44cf-9f1c-82bbf8a37295", "isAllowed": true },
-    { "permissionId": "f2895883-e3b6-4f31-95ba-e8aa183d9a31", "isAllowed": true },
-    { "permissionId": "a5c55147-1d99-433e-b022-5164d7eff76d", "isAllowed": true }
-  ]
-}
-```
-
-### Gyms and memberships
-
-- `GET /api/gyms` (returns only gyms where caller has `gyms:read`)
-- `GET /api/gyms/{gymId}` (requires `gyms:read`)
-- `POST /api/gyms` (authenticated users)
-- `GET /api/gyms/{gymId}/memberships` (requires `members:read`)
-- `POST /api/gyms/{gymId}/assignments` (requires `members:write`)
-
-Assign payload example:
-
-```json
-{
-  "email": "owner@betterfit.local",
-  "roleId": "<role-id-from-gym-roles-endpoint>"
-}
-```
-
-If `roleId` is the gym's Owner role and the gym already has an owner,
-ownership is transferred to the target user while keeping exactly one owner.
-
-## Auth flow
-
-1. Register or login using `/api/auth/register` or `/api/auth/login`
-2. Read `token` from response
-3. Send header `Authorization: Bearer <token>` to protected endpoints
-
-## Notes
-
-- Database is initialized at startup with `EnsureCreated()` for fast scaffolding.
-- For production-ready schema evolution, move to EF migrations.
-- If you are using an existing Postgres volume from the older schema, recreate it once so the new tables/keys are applied.
+Keep using migrations for schema changes. Do not switch back to `EnsureCreated()` if the database might already exist.
 
 ## Unified response format
 
@@ -162,11 +209,9 @@ All endpoints return the same envelope shape:
 ```json
 {
   "success": true,
-  "message": "Request completed successfully.",
   "data": {},
   "error": null,
-  "traceId": "00-...",
-  "timestampUtc": "2026-02-11T12:34:56.0000000Z"
+  "traceId": "00-..."
 }
 ```
 
@@ -186,7 +231,6 @@ Error example:
       ]
     }
   },
-  "traceId": "00-...",
-  "timestampUtc": "2026-02-11T12:34:56.0000000Z"
+  "traceId": "00-..."
 }
 ```

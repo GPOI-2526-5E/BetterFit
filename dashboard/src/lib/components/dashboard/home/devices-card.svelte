@@ -1,5 +1,4 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import {
 		Card,
@@ -21,16 +20,18 @@
 	};
 
 	const deviceLabel = (status: DeviceStatus): string => {
-		if (status === 'offline') return m.device_status_offline();
-		if (status === 'maintenance') return m.device_status_maintenance();
-		return m.device_status_online();
+		if (status === 'offline') return 'Offline';
+		if (status === 'maintenance') return 'Attenzione';
+		return 'Online';
 	};
 </script>
 
 <Card>
 	<CardHeader class="border-b border-border/70">
-		<CardTitle>{m.home_devices_title()}</CardTitle>
-		<CardDescription>{m.home_devices_desc()}</CardDescription>
+		<CardTitle>Sistemi e integrazioni</CardTitle>
+		<CardDescription>
+			Stato operativo di accessi, messaggistica ed export amministrativi del tenant.
+		</CardDescription>
 	</CardHeader>
 	<CardContent class="space-y-3 pt-4">
 		{#each devices as device}

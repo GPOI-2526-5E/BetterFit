@@ -19,6 +19,7 @@
 	--bf-ink-500: #64748b;
 	--bf-bg-100: #f4f7fc;
 	--bf-surface-100: #ffffff;
+	--bf-surface-200: #f8fbff;
 	--bf-border-300: #dce4f2;
 
 	--bf-success-600: #16a34a;
@@ -27,21 +28,24 @@
 	--bf-info-600: #0284c7;
 
 	--bf-shadow-card: 0 8px 24px rgba(12, 20, 36, 0.08);
+	--bf-shadow-float: 0 20px 44px rgba(12, 20, 36, 0.14);
+	--bf-sprint-gradient: linear-gradient(135deg, #0a4fd4 0%, #1769ff 55%, #31b8ff 100%);
+	--bf-energy-gradient: linear-gradient(135deg, #b8f21d 0%, #6ceb45 100%);
 
 	--background: var(--bf-bg-100);
 	--foreground: var(--bf-ink-900);
-	--card: var(--bf-surface-100);
+	--card: color-mix(in srgb, var(--bf-surface-100) 92%, #eff5ff 8%);
 	--card-foreground: var(--bf-ink-900);
-	--popover: var(--bf-surface-100);
+	--popover: color-mix(in srgb, var(--bf-surface-100) 96%, #eff5ff 4%);
 	--popover-foreground: var(--bf-ink-900);
 	--primary: var(--bf-primary-600);
 	--primary-foreground: #ffffff;
-	--secondary: var(--bf-primary-100);
+	--secondary: #edf4ff;
 	--secondary-foreground: var(--bf-primary-700);
-	--muted: #edf3ff;
+	--muted: #f8fbff;
 	--muted-foreground: var(--bf-ink-500);
-	--accent: var(--bf-energy-500);
-	--accent-foreground: var(--bf-ink-900);
+	--accent: var(--bf-primary-100);
+	--accent-foreground: var(--bf-primary-700);
 	--destructive: var(--bf-error-600);
 	--border: var(--bf-border-300);
 	--input: var(--bf-border-300);
@@ -72,12 +76,12 @@
 	--popover-foreground: #e2e8f0;
 	--primary: #4a88ff;
 	--primary-foreground: #ffffff;
-	--secondary: #1f2d49;
+	--secondary: #1b2841;
 	--secondary-foreground: #d7e4ff;
-	--muted: #1f2d49;
+	--muted: #152035;
 	--muted-foreground: #a7b3ca;
-	--accent: #a2d91a;
-	--accent-foreground: #0c1424;
+	--accent: #17315f;
+	--accent-foreground: #dbe7ff;
 	--destructive: #ef4444;
 	--border: rgba(255, 255, 255, 0.14);
 	--input: rgba(255, 255, 255, 0.18);
@@ -125,6 +129,8 @@
 	--color-chart-3: var(--chart-3);
 	--color-chart-4: var(--chart-4);
 	--color-chart-5: var(--chart-5);
+	--color-bf-energy-500: var(--bf-energy-500);
+	--color-bf-energy-100: var(--bf-energy-100);
 	--color-success-600: var(--bf-success-600);
 	--color-warning-600: var(--bf-warning-600);
 	--color-error-600: var(--bf-error-600);
@@ -147,8 +153,54 @@
 		@apply bg-background text-foreground antialiased;
 		font-family: 'Sora Variable', 'Avenir Next', 'Segoe UI', sans-serif;
 		background-image:
-			radial-gradient(860px 460px at 8% -10%, rgba(23, 105, 255, 0.12), transparent 62%),
-			radial-gradient(860px 520px at 100% 0, rgba(184, 242, 29, 0.1), transparent 58%);
+			radial-gradient(860px 460px at 8% -10%, rgba(23, 105, 255, 0.14), transparent 62%),
+			radial-gradient(760px 480px at 100% 0, rgba(184, 242, 29, 0.12), transparent 56%),
+			linear-gradient(180deg, #f8fbff 0%, var(--bf-bg-100) 100%);
 		background-attachment: fixed;
+	}
+	::selection {
+		background: color-mix(in srgb, var(--bf-primary-600) 24%, white 76%);
+		color: var(--bf-ink-900);
+	}
+}
+
+@keyframes sidebar-submenu-down {
+	from {
+		height: 0;
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		height: var(--bits-collapsible-content-height);
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes sidebar-submenu-up {
+	from {
+		height: var(--bits-collapsible-content-height);
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		height: 0;
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+}
+
+@layer components {
+	.sidebar-submenu-motion {
+		overflow: hidden;
+		will-change: height, opacity, transform;
+	}
+
+	.sidebar-submenu-motion[data-state='open'] {
+		animation: sidebar-submenu-down 220ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.sidebar-submenu-motion[data-state='closed'] {
+		animation: sidebar-submenu-up 180ms cubic-bezier(0.4, 0, 1, 1);
 	}
 }

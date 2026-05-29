@@ -10,6 +10,7 @@ public static class ApiResponseFactory
         {
             Success = true,
             Data = data,
+            TraceId = httpContext.TraceIdentifier,
         };
     }
 

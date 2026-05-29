@@ -1,7 +1,6 @@
-import type { Tooltip } from "layerchart";
-import { getContext, setContext, type Component, type ComponentProps, type Snippet } from "svelte";
+import { getContext, setContext, type Component, type ComponentProps, type Snippet } from 'svelte';
 
-export const THEMES = { light: "", dark: ".dark" } as const;
+export const THEMES = { light: '', dark: '.dark' } as const;
 
 export type ChartConfig = {
 	[k in string]: {
@@ -15,9 +14,7 @@ export type ChartConfig = {
 
 export type ExtractSnippetParams<T> = T extends Snippet<[infer P]> ? P : never;
 
-export type TooltipPayload = ExtractSnippetParams<
-	ComponentProps<typeof Tooltip.Root>["children"]
->["payload"][number];
+export type TooltipPayload = Record<string, any>;
 
 // Helper to extract item config from a payload.
 export function getPayloadConfigFromPayload(
@@ -25,27 +22,28 @@ export function getPayloadConfigFromPayload(
 	payload: TooltipPayload,
 	key: string
 ) {
-	if (typeof payload !== "object" || payload === null) return undefined;
+	if (typeof payload !== 'object' || payload === null) return undefined;
 
+	const payloadRecord = payload as Record<string, any>;
 	const payloadPayload =
-		"payload" in payload && typeof payload.payload === "object" && payload.payload !== null
-			? payload.payload
+		typeof payloadRecord.payload === 'object' && payloadRecord.payload !== null
+			? (payloadRecord.payload as Record<string, any>)
 			: undefined;
 
 	let configLabelKey: string = key;
 
-	if (payload.key === key) {
-		configLabelKey = payload.key;
-	} else if (payload.name === key) {
-		configLabelKey = payload.name;
-	} else if (key in payload && typeof payload[key as keyof typeof payload] === "string") {
-		configLabelKey = payload[key as keyof typeof payload] as string;
+	if (payloadRecord.key === key) {
+		configLabelKey = payloadRecord.key;
+	} else if (payloadRecord.name === key) {
+		configLabelKey = payloadRecord.name;
+	} else if (key in payloadRecord && typeof payloadRecord[key] === 'string') {
+		configLabelKey = payloadRecord[key];
 	} else if (
 		payloadPayload !== undefined &&
 		key in payloadPayload &&
-		typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+		typeof payloadPayload[key] === 'string'
 	) {
-		configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string;
+		configLabelKey = payloadPayload[key];
 	}
 
 	return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config];
@@ -55,7 +53,7 @@ type ChartContextValue = {
 	config: ChartConfig;
 };
 
-const chartContextKey = Symbol("chart-context");
+const chartContextKey = Symbol('chart-context');
 
 export function setChartContext(value: ChartContextValue) {
 	return setContext(chartContextKey, value);

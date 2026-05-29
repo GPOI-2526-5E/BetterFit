@@ -91,43 +91,11 @@ public class RolesController : ApiControllerBase
             return ConflictError<RoleResponse>("A role with this name already exists for this gym.");
         }
 
-        var requestedPermissions = request.Permissions
-            .Where(permission => permission.PermissionId != Guid.Empty)
-            .GroupBy(permission => permission.PermissionId)
-            .Select(group => group.Last())
-            .ToList();
-
-        if (requestedPermissions.Count == 0)
+        var requestedPermissions = NormalizePermissionRequests(request.Permissions);
+        var permissionValidation = await ValidatePermissionRequestsAsync(requestedPermissions, cancellationToken);
+        if (permissionValidation.Error is not null)
         {
-            return BadRequestError<RoleResponse>(
-                code: "invalid_permissions",
-                message: "At least one valid permissionId is required.");
-        }
-
-        var requestedPermissionIds = requestedPermissions
-            .Select(permission => permission.PermissionId)
-            .Distinct()
-            .ToList();
-
-        var catalogItems = await _dbContext.PermissionCatalogItems
-            .Where(item => requestedPermissionIds.Contains(item.Id))
-            .ToListAsync(cancellationToken);
-
-        if (catalogItems.Count != requestedPermissionIds.Count)
-        {
-            var knownPermissionIds = catalogItems.Select(item => item.Id).ToHashSet();
-            var missingPermissionIds = requestedPermissionIds
-                .Where(permissionId => !knownPermissionIds.Contains(permissionId))
-                .Select(permissionId => permissionId.ToString())
-                .ToArray();
-
-            return BadRequestError<RoleResponse>(
-                code: "permission_catalog_missing",
-                message: "One or more permissionId values do not exist in the permission catalog.",
-                details: new Dictionary<string, string[]>
-                {
-                    ["missingPermissionIds"] = missingPermissionIds
-                });
+            return permissionValidation.Error;
         }
 
         var role = new GymRole
@@ -168,9 +136,135 @@ public class RolesController : ApiControllerBase
             ToRoleResponse(createdRole));
     }
 
+    [HttpPut("{roleId:guid}")]
+    [Authorize(Policy = AuthorizationPolicies.RolesWrite)]
+    public async Task<ActionResult<ApiResponse<RoleResponse>>> UpdateCustomRole(
+        Guid gymId,
+        Guid roleId,
+        [FromBody] UpdateRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        var role = await _dbContext.GymRoles
+            .Where(item => item.GymId == gymId)
+            .Include(item => item.Permissions)
+            .SingleOrDefaultAsync(item => item.Id == roleId, cancellationToken);
+
+        if (role is null)
+        {
+            return NotFoundError<RoleResponse>("Role not found for this gym.");
+        }
+
+        if (role.IsDefault)
+        {
+            return ConflictError<RoleResponse>("Default roles cannot be edited from the tenant workspace.");
+        }
+
+        var roleName = request.Name.Trim();
+        if (string.IsNullOrWhiteSpace(roleName))
+        {
+            return BadRequestError<RoleResponse>("invalid_role_name", "Role name is required.");
+        }
+
+        var normalizedName = roleName.ToUpperInvariant();
+        var roleAlreadyExists = await _dbContext.GymRoles.AnyAsync(
+            item => item.GymId == gymId && item.Id != roleId && item.NormalizedName == normalizedName,
+            cancellationToken);
+
+        if (roleAlreadyExists)
+        {
+            return ConflictError<RoleResponse>("A role with this name already exists for this gym.");
+        }
+
+        var requestedPermissions = NormalizePermissionRequests(request.Permissions);
+        var permissionValidation = await ValidatePermissionRequestsAsync(requestedPermissions, cancellationToken);
+        if (permissionValidation.Error is not null)
+        {
+            return permissionValidation.Error;
+        }
+
+        role.Name = roleName;
+        role.NormalizedName = normalizedName;
+        role.Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim();
+
+        _dbContext.RolePermissions.RemoveRange(role.Permissions);
+        role.Permissions = requestedPermissions
+            .Select(permission => new RolePermission
+            {
+                Id = Guid.NewGuid(),
+                RoleId = role.Id,
+                PermissionId = permission.PermissionId,
+                IsAllowed = permission.IsAllowed
+            })
+            .ToList();
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var updatedRole = await _dbContext.GymRoles
+            .AsNoTracking()
+            .Where(item => item.GymId == gymId)
+            .Include(item => item.Permissions)
+            .ThenInclude(permission => permission.Permission)
+            .SingleAsync(item => item.Id == role.Id, cancellationToken);
+
+        return Success(ToRoleResponse(updatedRole));
+    }
+
     private async Task<bool> GymExists(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Gyms.AnyAsync(gym => gym.Id == gymId, cancellationToken);
+    }
+
+    private static List<PermissionRequest> NormalizePermissionRequests(IEnumerable<PermissionRequest> permissions)
+    {
+        return permissions
+            .Where(permission => permission.PermissionId != Guid.Empty)
+            .GroupBy(permission => permission.PermissionId)
+            .Select(group => group.Last())
+            .ToList();
+    }
+
+    private async Task<(ActionResult<ApiResponse<RoleResponse>>? Error, IReadOnlyCollection<Guid> CatalogIds)> ValidatePermissionRequestsAsync(
+        IReadOnlyCollection<PermissionRequest> requestedPermissions,
+        CancellationToken cancellationToken)
+    {
+        if (requestedPermissions.Count == 0)
+        {
+            return (
+                BadRequestError<RoleResponse>(
+                    code: "invalid_permissions",
+                    message: "At least one valid permissionId is required."),
+                []);
+        }
+
+        var requestedPermissionIds = requestedPermissions
+            .Select(permission => permission.PermissionId)
+            .Distinct()
+            .ToList();
+
+        var catalogItems = await _dbContext.PermissionCatalogItems
+            .Where(item => requestedPermissionIds.Contains(item.Id))
+            .ToListAsync(cancellationToken);
+
+        if (catalogItems.Count != requestedPermissionIds.Count)
+        {
+            var knownPermissionIds = catalogItems.Select(item => item.Id).ToHashSet();
+            var missingPermissionIds = requestedPermissionIds
+                .Where(permissionId => !knownPermissionIds.Contains(permissionId))
+                .Select(permissionId => permissionId.ToString())
+                .ToArray();
+
+            return (
+                BadRequestError<RoleResponse>(
+                    code: "permission_catalog_missing",
+                    message: "One or more permissionId values do not exist in the permission catalog.",
+                    details: new Dictionary<string, string[]>
+                    {
+                        ["missingPermissionIds"] = missingPermissionIds
+                    }),
+                catalogItems.Select(item => item.Id).ToArray());
+        }
+
+        return (null, catalogItems.Select(item => item.Id).ToArray());
     }
 
     private static RoleResponse ToRoleResponse(GymRole role)
@@ -182,7 +276,7 @@ public class RolesController : ApiControllerBase
                 permission.PermissionId,
                 permission.Permission.Resource,
                 permission.Permission.Action,
-                permission.Permission.Description,
+                permission.Permission.DescriptionKey,
                 permission.IsAllowed))
             .ToList();
 
